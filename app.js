@@ -41,8 +41,8 @@
   }
 
   // ---------- state ----------
-  const DEFAULTS = { minKw: 100, stat: 'alle', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.65, hideUnknown: false, adac: true };
-  const F = Object.assign({}, DEFAULTS, store('gl-filter-v3') || {});
+  const DEFAULTS = { minKw: 100, stat: 'alle', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.62, hideUnknown: false, adac: true };
+  const F = Object.assign({}, DEFAULTS, store('gl-filter-v4') || {});
   let sites = [], places = [], axes = {}, MW = [], STAND = {}, PSTAND = '';
   const grid = new Map();
   const siteByKey = new Map();
@@ -693,7 +693,7 @@
     $('#funk').checked = F.hideUnknown; $('#fadac').checked = F.adac;
     $('#fop').value = F.op;
   }
-  function filterChanged() { store('gl-filter-v3', F); syncFilterUi(); refreshAll(); }
+  function filterChanged() { store('gl-filter-v4', F); syncFilterUi(); refreshAll(); }
   $('#fkw').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { F.minKw = +b.dataset.v; filterChanged(); } });
   $('#fstat').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { F.stat = b.dataset.v; filterChanged(); } });
   $('#fprice').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { F.maxPrice = b.dataset.v === 'x' ? null : +b.dataset.v; filterChanged(); } });
