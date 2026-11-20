@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gespann-lader.de/sitemap.xml
