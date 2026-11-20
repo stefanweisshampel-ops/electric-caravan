@@ -16,7 +16,7 @@
   const KX = 111.32 * Math.cos(51 * Math.PI / 180), KY = 110.57;
   const dist = (a, b, c, d) => Math.hypot((a - c) * KY, (b - d) * KX);
   const COLORS = { ja: '#1f8f4e', eng: '#d48806', nein: '#cf3d3d', open: '#3a6ea5', truck: '#9aa1a9' };
-  const STATUS_TXT = { ja: 'Durchfahrt möglich', eng: 'Eng, mit Rangieren', nein: 'Abkoppeln nötig' };
+  const STATUS_TXT = { ja: 'Durchfahrt möglich', eng: 'Nur wenn wenig los', nein: 'Abkoppeln nötig' };
   let toastT = null;
   function toast(msg, ms) {
     const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
@@ -448,7 +448,7 @@
     head.innerHTML = '<h2>Schnelllader</h2><span class="sub">' + inView.length.toLocaleString('de-DE') + ' im Ausschnitt' + (backend === 'demo' ? ' · Demo-Modus' : '') + '</span>';
     if (z < 8 && inView.length > 150) {
       body.innerHTML = '<div class="empty">Suche oben einen <b>Ort</b> oder eine <b>Autobahn</b> (z. B. „A9“), nutze die Standort-Taste oder zoome in die Karte.<br><br>' +
-        'Tippe einen Standort an, prüfe ihn per Luftbild und bewerte ihn: <b>Durchfahrt</b>, <b>eng</b> oder <b>abkoppeln</b>. ' +
+        'Tippe einen Standort an, prüfe ihn per Luftbild und bewerte ihn: <b>Durchfahrt</b>, <b>nur wenn wenig los</b> oder <b>abkoppeln</b>. ' +
         'Bisher bewertet: <b>' + ratedSites.size.toLocaleString('de-DE') + '</b> Standort' + (ratedSites.size === 1 ? '' : 'e') + (mineSites.size ? ', davon <b>' + mineSites.size + '</b> von dir' : '') + '.</div>' + legalHtml;
       return;
     }
@@ -535,7 +535,7 @@
     if (!st) return '<div class="note" style="margin-top:0">Noch keine Bewertung. Sei die erste Person, die diesen Standort bewertet.</div>';
     const tally = '<div class="tally">' +
       (st.ja ? '<span class="ja">' + st.ja + '× Durchfahrt</span>' : '') +
-      (st.eng ? '<span class="eng">' + st.eng + '× eng</span>' : '') +
+      (st.eng ? '<span class="eng">' + st.eng + '× nur wenn wenig los</span>' : '') +
       (st.nein ? '<span class="nein">' + st.nein + '× abkoppeln</span>' : '') + '</div>';
     const notes = backend === 'demo'
       ? (s.mine && s.mine.note ? [{ status: s.mine.status, note: s.mine.note, updated_at: s.mine.t, is_mine: true }] : [])
@@ -552,7 +552,7 @@
     const m = s.mine;
     return '<div class="rbtns">' +
       '<button data-s="ja"' + dis + '>Durchfahrt<br>möglich</button>' +
-      '<button data-s="eng"' + dis + '>Eng, mit<br>Rangieren</button>' +
+      '<button data-s="eng"' + dis + '>Nur wenn<br>wenig los</button>' +
       '<button data-s="nein"' + dis + '>Abkoppeln<br>nötig</button></div>' +
       '<textarea class="n" id="note" maxlength="300" placeholder="Notiz, z. B. „Durchfahrt nur an Säule 3“ oder „Einfahrt zu eng“"' + dis + '>' + esc(m ? m.note : '') + '</textarea>' +
       '<div class="act"><button class="btn" id="save"' + dis + '>' + (m ? 'Bewertung ändern' : 'Speichern') + '</button>' +
