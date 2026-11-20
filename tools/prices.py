@@ -42,7 +42,7 @@ PRICES = [
     ('westfalen', 'Westfalen', r'^Westfalen AG', [0.64, 0.64], None, '', '', LC),
     ('electra', 'Electra', r'Electra', [0.69, 0.69], [0.54, 0.54], 'Electra-App', '', LC + '; App-Preis: einfacheauto/Auto Bild 2026'),
     ('sachsen', 'SachsenEnergie', r'SachsenEnergie', [0.50, 0.50], None, '', 'Quelle ohne genaues Datum.', 'inside-digital Tarifübersicht'),
-    ('orlen', 'ORLEN', r'ORLEN', [0.58, 0.58], None, '', '', LC),
+    ('orlen', 'ORLEN', r'ORLEN', [0.49, 0.58], None, '', 'Kartenterminal 0,49 €; per QR-Code 0,69 € plus 3,45 € Mindestgebühr.', 'star.de/ORLEN Charge (Stand 21.11.2026); ' + LC),
     ('mainova', 'Mainova', r'Mainova', [0.76, 0.76], None, '', '', LC),
     ('praeg', 'Präg', r'Präg', [0.57, 0.57], None, '', '', LC),
     ('mvv', 'MVV', r'^MVV', [0.66, 0.66], None, '', '', LC),
