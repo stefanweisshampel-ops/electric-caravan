@@ -55,6 +55,7 @@ PRICES = [
     ('circlek', 'Circle K', r'Circle K', None, [0.69, 0.69], 'Circle K Go', 'App-Preis laut deiner Beobachtung; Ad-hoc-Preis unbekannt.', 'eigene Beobachtung'),
 ]
 ADAC = {'aral': 0.57}  # ADAC e-Charge (Mitglieder, keine Grundgebühr)
+MOTION = {'ionity': 0.49}  # IONITY Motion: Abo 5,99 €/Monat, ab 0,49 €/kWh (ionity.eu, electrive 06/2026)
 
 _compiled = [(p, re.compile(p[2])) for p in PRICES]
 

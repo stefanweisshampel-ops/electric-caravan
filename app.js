@@ -41,7 +41,7 @@
   }
 
   // ---------- state ----------
-  const DEFAULTS = { minKw: 100, stat: 'alle', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.62, hideUnknown: false, adac: true };
+  const DEFAULTS = { minKw: 100, stat: 'alle', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.62, hideUnknown: false, adac: true, motion: false };
   const F = Object.assign({}, DEFAULTS, store('gl-filter-v4') || {});
   let sites = [], places = [], axes = {}, MW = [], STAND = {}, PSTAND = '';
   const grid = new Map();
@@ -62,7 +62,7 @@
   function decodeCountry(cc, d) {
     STAND[cc] = d.stand; PSTAND = d.priceStand || PSTAND;
     Object.assign(axes, d.axes || {});
-    const prices = d.prices || [], adac = d.adac || {}, opPrice = d.opPrice || [];
+    const prices = d.prices || [], adac = d.adac || {}, motion = d.motion || {}, opPrice = d.opPrice || [];
     d.places.forEach((p) => places.push([p[0], p[1], p[2], p[3], p[4], cc]));
     d.sites.forEach((r) => {
       const fl = r[8];
@@ -73,6 +73,7 @@
         ccs: !!(fl & 1), cha: !!(fl & 2), mcs: !!(fl & 4), term: !!(fl & 8), h24: !!(fl & 16), truck: !!(fl & 32),
         rest: !!(fl & 64), tnear: !!(fl & 128), hours: r[9], since: r[10], mw: r[11], A,
         price: pi >= 0 ? prices[pi] : null, adac: pi >= 0 && adac[prices[pi].k] != null ? adac[prices[pi].k] : null,
+        motion: pi >= 0 && motion[prices[pi].k] != null ? motion[prices[pi].k] : null,
         st: null, statKey: null, mine: null,
       };
       s.key = keyOf(cc, s.lat, s.lon);
@@ -286,6 +287,7 @@
     if (p.adhoc) c.push(p.adhoc[0]);
     if (p.app) c.push(p.app[0]);
     if (F.adac && s.adac != null) c.push(s.adac);
+    if (F.motion && s.motion != null) c.push(s.motion);
     return c.length ? Math.min.apply(null, c) : null;
   }
   const priceShort = (s) => { const b = bestPrice(s); return b == null ? 'Preis ?' : 'ab ' + fmtEur(b); };
@@ -524,8 +526,9 @@
     const rows = [['Ad hoc (Karte/QR)', p.adhoc ? rng(p.adhoc) : 'unbekannt']];
     if (p.app) rows.push(['App ohne Grundgebühr' + (p.appName ? ' (' + p.appName + ')' : ''), rng(p.app)]);
     if (s.adac != null) rows.push(['ADAC e-Charge (Mitglieder)', fmtEur(s.adac) + (F.adac ? '' : ' – im Filter ausgeschaltet')]);
+    if (s.motion != null) rows.push(['IONITY Motion (Abo 5,99 €/Monat)', 'ab ' + fmtEur(s.motion) + (F.motion ? '' : ' – im Filter ausgeschaltet')]);
     const b = bestPrice(s);
-    return '<div class="sec price"><h4>Preis ohne Abo <span class="pbest' + (b != null && F.maxPrice != null && b > F.maxPrice ? ' over' : '') + '">' + (b != null ? 'ab ' + fmtEur(b) : '') + '</span></h4>' +
+    return '<div class="sec price"><h4>Preise <span class="pbest' + (b != null && F.maxPrice != null && b > F.maxPrice ? ' over' : '') + '">' + (b != null ? 'ab ' + fmtEur(b) : '') + '</span></h4>' +
       '<table>' + rows.map(([k, v]) => '<tr><td>' + esc(k) + '</td><td>' + esc(v) + '</td></tr>').join('') + '</table>' +
       (p.note ? '<div class="note" style="margin-top:6px">' + esc(p.note) + '</div>' : '') +
       '<div class="note" style="margin-top:6px">Betreiberpreis für ' + esc(p.label) + ', Schnellladen (DC). Quelle: ' + esc(p.src) + '. Verbindlich ist der Preis vor dem Ladestart.</div></div>';
@@ -690,7 +693,7 @@
     $('#fstat').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.v === F.stat));
     $('#fprice').querySelectorAll('button').forEach((b) => b.classList.toggle('on', (b.dataset.v === 'x' ? null : +b.dataset.v) === F.maxPrice));
     $('#ftruck').checked = F.hideTruck; $('#fmw').checked = F.mw; $('#fterm').checked = F.term; $('#frest').checked = F.rest;
-    $('#funk').checked = F.hideUnknown; $('#fadac').checked = F.adac;
+    $('#funk').checked = F.hideUnknown; $('#fadac').checked = F.adac; $('#fmotion').checked = F.motion;
     $('#fop').value = F.op;
   }
   function filterChanged() { store('gl-filter-v4', F); syncFilterUi(); refreshAll(); }
@@ -703,6 +706,7 @@
   $('#frest').addEventListener('change', (e) => { F.rest = e.target.checked; filterChanged(); });
   $('#funk').addEventListener('change', (e) => { F.hideUnknown = e.target.checked; filterChanged(); });
   $('#fadac').addEventListener('change', (e) => { F.adac = e.target.checked; filterChanged(); });
+  $('#fmotion').addEventListener('change', (e) => { F.motion = e.target.checked; filterChanged(); });
   $('#fop').addEventListener('input', debounce(() => { F.op = $('#fop').value.trim(); filterChanged(); }, 250));
   $('#freset').addEventListener('click', () => { Object.assign(F, DEFAULTS); filterChanged(); });
   $('#fbtn').addEventListener('click', () => { syncFilterUi(); $('#fmodal').classList.add('open'); });
