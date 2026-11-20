@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Gespann-Lader – Schnelllader mit Durchfahrt für Anhänger</title>
+<meta name="description" content="Schnellladesäulen finden, an denen man mit Anhänger oder Wohnwagen durchfahren kann – von Gespannfahrern bewertet.">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loading">Lade Ladesäulendaten …</div>
+<div id="map"></div>
+
+<div id="top">
+  <div id="searchwrap">
+    <input id="q" type="search" autocomplete="off" placeholder="Ort oder Autobahn (z. B. A9)" aria-label="Ort oder Autobahn suchen">
+    <button id="qclear" aria-label="Suche leeren">×</button>
+    <div id="sugg" role="listbox"></div>
+  </div>
+  <button class="iconbtn" id="fbtn" aria-label="Filter">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+    <span class="badge" id="fbadge"></span>
+  </button>
+  <button class="iconbtn" id="ibtn" aria-label="Konto und Info">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+    <span class="badge" id="ibadge"></span>
+  </button>
+</div>
+
+<div id="routechip"><span class="shield" id="rcname">A9</span><span id="rcdir"></span><button id="rcflip">Richtung ⇅</button><button id="rcx" aria-label="Autobahn-Ansicht beenden">✕</button></div>
+
+<div id="legend">
+  <div><i style="background:var(--ok)"></i>Durchfahrt</div>
+  <div><i style="background:var(--mid)"></i>eng / rangieren</div>
+  <div><i style="background:var(--no)"></i>abkoppeln</div>
+  <div><i style="background:var(--open)"></i>noch nicht bewertet</div>
+</div>
+
+<div id="sheet">
+  <button id="grab" aria-label="Liste vergrößern oder verkleinern"><span></span></button>
+  <div id="sheethead"></div>
+  <div id="body"></div>
+</div>
+
+<div class="modal" id="fmodal">
+  <div class="panel">
+    <h3>Filter <button class="btn ghost" id="fclose">Fertig</button></h3>
+    <div class="fgroup"><div class="lbl">Mindestleistung</div>
+      <div class="seg" id="fkw"><button data-v="50">ab 50 kW</button><button data-v="100">ab 100 kW</button><button data-v="150">ab 150 kW</button><button data-v="300">ab 300 kW</button></div></div>
+    <div class="fgroup"><div class="lbl">Preis ohne Abo (ad hoc oder App ohne Grundgebühr)</div>
+      <div class="seg" id="fprice"><button data-v="x">egal</button><button data-v="0.55">bis 0,55 €</button><button data-v="0.65">bis 0,65 €</button><button data-v="0.75">bis 0,75 €</button></div>
+      <label class="tog"><input type="checkbox" id="fadac"> <span>Ich bin ADAC-Mitglied<small>Aral pulse dann mit ADAC e-Charge für 0,57 € statt 0,69–0,79 €.</small></span></label>
+      <label class="tog"><input type="checkbox" id="funk"> <span>Betreiber ohne bekannten Preis ausblenden<small>Für rund ein Fünftel der Standorte ab 100 kW ist kein Preis hinterlegt.</small></span></label></div>
+    <div class="fgroup"><div class="lbl">Gespann-Bewertung</div>
+      <div class="seg" id="fstat"><button data-v="alle">Alle</button><button data-v="ja">Nur Durchfahrt</button><button data-v="offen">Unbewertet</button><button data-v="ohne-nein">Ohne „abkoppeln“</button></div></div>
+    <div class="fgroup">
+      <label class="tog"><input type="checkbox" id="ftruck"> <span>Lkw-Ladeparks ausblenden<small>Dort funktionieren Pkw-Ladekarten meist nicht.</small></span></label>
+      <label class="tog"><input type="checkbox" id="fmw"> <span>Nur nahe der Autobahn<small>Höchstens 3 km Luftlinie bis zur nächsten Autobahn.</small></span></label>
+      <label class="tog"><input type="checkbox" id="fterm"> <span>Nur mit Kartenterminal<small>Laut Register Zahlung mit EC- oder Kreditkarte an der Säule.</small></span></label>
+      <label class="tog"><input type="checkbox" id="frest"> <span>Nur Autohof / Rastanlage<small>Nach Name im Register erkannt, nicht vollständig.</small></span></label>
+    </div>
+    <div class="fgroup"><div class="lbl">Betreiber enthält</div><input class="txt" id="fop" placeholder="z. B. EnBW, Aral, eliso, Orlen"></div>
+    <button class="btn ghost" id="freset">Filter zurücksetzen</button>
+  </div>
+</div>
+
+<div class="modal" id="imodal">
+  <div class="panel">
+    <h3>Konto &amp; Info <button class="btn ghost" id="iclose">Schließen</button></h3>
+    <div class="acct" id="acct"></div>
+    <p><b>Wozu:</b> Schnelllader finden, an denen man mit Anhänger oder Wohnwagen durchfahren kann, ohne abzukoppeln. Das steht in keinem amtlichen Datensatz – deshalb bewerten Gespannfahrer die Standorte selbst. Je mehr mitmachen, desto besser wird die Karte.</p>
+    <p><b>So bewertest du:</b> Standort antippen, per Luftbild oder vor Ort prüfen, dann „Durchfahrt möglich“, „Eng, mit Rangieren“ oder „Abkoppeln nötig“ wählen. Die Farbe auf der Karte zeigt die häufigste Bewertung.</p>
+    <p><b>Lkw-Ladeparks</b> werden am MCS-Stecker, an sehr hoher Leistung (ab 600 kW) oder an Namen wie Milence, „Truck“ oder „LKW“ erkannt. Das ist eine Heuristik.</p>
+    <p><b>Preise ohne Abo:</b> Pro Betreiber hinterlegt sind der Ad-hoc-Preis und, falls vorhanden, der Preis der eigenen App ohne Grundgebühr, jeweils fürs Schnellladen. Gefiltert wird mit dem günstigsten davon; bei Preisspannen zählt der untere Wert. Fremde Ladekarten sind nicht eingerechnet. Verbindlich ist immer der Preis vor dem Ladestart.</p>
+    <p id="istand"></p>
+    <p><b>Quellen:</b> Ladesäulenregister der Bundesnetzagentur (CC BY 4.0), aufbereitet von <a href="https://github.com/ratopi/ladesaeule">ratopi/ladesaeule</a> · Karte: <a href="https://openfreemap.org">OpenFreeMap</a>, Kartendaten © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende · Autobahnachsen: <a href="https://www.naturalearthdata.com/">Natural Earth</a>.</p>
+    <p><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script src="vendor/maplibre-gl.js"></script>
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
