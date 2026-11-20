@@ -137,3 +137,5 @@ textarea.n{width:100%;margin-top:10px;border:1.5px solid var(--line);border-radi
   .modal{align-items:center}
   .panel{border-radius:18px}
 }
+.sent{background:#eef6f1;border:1px solid #cfe5d8;border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px;line-height:1.45;color:var(--ink)}
+.sent .act{margin-top:8px}

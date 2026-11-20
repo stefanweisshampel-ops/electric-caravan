@@ -163,19 +163,52 @@
   function setUser(u) {
     const id = u ? u.id : null;
     user = u;
+    if (u) loginSent = null;
     renderAcct();
     if (id === lastUserId) return;
     lastUserId = id;
     loadMine();
     if (detail) { notesCache.delete(detail.statKey || detail.key); renderDetail(); loadNotes(detail); }
   }
+  // Anmeldung per E-Mail-Link
+  let loginSent = null, loginBusy = false;
   async function sendLogin(email) {
     email = (email || '').trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { toast('Bitte eine gültige E-Mail-Adresse eingeben.'); return; }
+    if (loginBusy) return;
+    loginBusy = true;
     const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + location.pathname } });
-    if (error) toast('Anmelde-Link konnte nicht verschickt werden: ' + error.message, 5000);
-    else toast('Anmelde-Link verschickt. Bitte E-Mail öffnen und den Link antippen.', 6000);
+    loginBusy = false;
+    if (error) {
+      const m = /(\d+)\s*second/i.exec(error.message || '');
+      toast(m ? 'Bitte warte noch ' + m[1] + ' Sekunden, dann kannst du den Link erneut anfordern.'
+        : 'Anmelde-Link konnte nicht verschickt werden: ' + error.message, 6000);
+      return;
+    }
+    loginSent = { email };
+    rerenderLogin();
   }
+  function loginHtml(p, intro) {
+    if (loginSent) {
+      return '<div class="sent"><b>Link verschickt an ' + esc(loginSent.email) + '.</b><br>' +
+        'Öffne die E-Mail und tippe auf den Link – am besten auf diesem Gerät. ' +
+        'Nichts angekommen? Schau bitte auch im <b>Spam- oder Werbung-Ordner</b> nach, die Mail kann ein paar Minuten brauchen. ' +
+        'Falls sie dort liegt, markiere sie als „kein Spam“, dann kommen die nächsten Links sicher an.' +
+        '<div class="act"><button class="btn ghost" id="' + p + 'resend">Erneut senden</button><button class="btn link" id="' + p + 'other">Andere Adresse</button></div></div>';
+    }
+    return (intro ? '<div class="note" style="margin-top:0">' + intro + '</div>' : '') +
+      '<div class="login"><input id="' + p + 'email" type="email" autocomplete="email" placeholder="E-Mail-Adresse"><button class="btn" id="' + p + 'send">Link senden</button></div>' +
+      '<div class="note">Die Anmelde-Mail landet manchmal im Spam-Ordner – schau dort nach, falls sie nicht im Posteingang ist.</div>';
+  }
+  function bindLogin(p) {
+    const el = (id) => document.getElementById(p + id);
+    const on = (id, fn) => { if (el(id)) el(id).addEventListener('click', fn); };
+    on('send', () => sendLogin(el('email').value));
+    on('resend', () => sendLogin(loginSent && loginSent.email));
+    on('other', () => { loginSent = null; rerenderLogin(); });
+    if (el('email')) el('email').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendLogin(el('email').value); } });
+  }
+  function rerenderLogin() { renderAcct(); if (detail) renderDetail(); }
   async function logout() { if (sb) await sb.auth.signOut(); toast('Abgemeldet'); }
 
   // backend: demo (nur dieser Browser)
@@ -513,8 +546,7 @@
   }
   function rateFormHtml(s) {
     if (backend === 'supabase' && !user) {
-      return '<div class="note" style="margin-top:0">Zum Bewerten kurz anmelden – ohne Passwort, du bekommst einen Link per E-Mail.</div>' +
-        '<div class="login"><input id="lemail" type="email" autocomplete="email" placeholder="E-Mail-Adresse"><button class="btn" id="lsend">Link senden</button></div>';
+      return loginHtml('l', 'Zum Bewerten kurz anmelden – ohne Passwort, du bekommst einen Link per E-Mail.');
     }
     const dis = saving ? ' disabled' : '';
     const m = s.mine;
@@ -582,7 +614,7 @@
     const on = (id, fn) => { const el = $('#' + id); if (el) el.addEventListener('click', fn); };
     on('save', saveRating);
     on('del', deleteRating);
-    on('lsend', () => sendLogin($('#lemail').value));
+    bindLogin('l');
     on('rep', () => { $('#repbox').style.display = 'block'; });
     on('repsend', () => { sendReport($('#repreason').value); $('#repbox').style.display = 'none'; });
   }
@@ -596,9 +628,8 @@
       return;
     }
     if (!user) {
-      el.innerHTML = '<b>Nicht angemeldet.</b> Zum Bewerten mit E-Mail anmelden – ohne Passwort, du bekommst einen Link.' +
-        '<div class="login"><input id="aemail" type="email" autocomplete="email" placeholder="E-Mail-Adresse"><button class="btn" id="asend">Link senden</button></div>';
-      $('#asend').addEventListener('click', () => sendLogin($('#aemail').value));
+      el.innerHTML = '<b>Nicht angemeldet.</b> Zum Bewerten mit E-Mail anmelden – ohne Passwort, du bekommst einen Link.' + loginHtml('a', '');
+      bindLogin('a');
       return;
     }
     el.innerHTML = 'Angemeldet als <b>' + esc(user.email || '') + '</b><br>Deine Bewertungen: <b>' + mineSites.size + '</b>' +
