@@ -719,10 +719,11 @@
   // ---------- boot ----------
   async function boot() {
     try {
-      const countries = await fetchJson('data/countries.json');
+      const V = '?v=' + (window.GL_VERSION || Date.now());
+      const countries = await fetchJson('data/countries.json' + V);
       const [datas, mw] = await Promise.all([
-        Promise.all(countries.map((c) => fetchJson(c.file, 60000).then((d) => [c.code, d]))),
-        fetchJson('data/mw.json').catch(() => []),
+        Promise.all(countries.map((c) => fetchJson(c.file + V, 60000).then((d) => [c.code, d]))),
+        fetchJson('data/mw.json' + V).catch(() => []),
       ]);
       datas.forEach(([cc, d]) => decodeCountry(cc, d));
       MW = mw;
