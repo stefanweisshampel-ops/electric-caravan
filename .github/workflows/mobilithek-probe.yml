@@ -1,0 +1,88 @@
+name: Mobilithek-Testabruf
+
+# Holt einmal alle abonnierten AFIR-Datenpakete und legt NUR eine Zusammenfassung
+# (keine Rohdaten, keine Zugangsdaten) auf dem Branch "mobilithek-probe" ab.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/mobilithek-probe.yml
+      - tools/mobilithek_probe.py
+      - tools/mobilithek.json
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Zertifikat vorbereiten
+        env:
+          P12: ${{ secrets.MOBILITHEK_P12 }}
+          PW: ${{ secrets.MOBILITHEK_P12_PASSWORT }}
+        run: |
+          mkdir -p probe/raw "$RUNNER_TEMP/mt"
+          if [ -z "$P12" ]; then echo "SECRET_FEHLT MOBILITHEK_P12" | tee probe/secrets.txt; fi
+          if [ -z "$PW" ]; then echo "SECRET_FEHLT MOBILITHEK_P12_PASSWORT" | tee -a probe/secrets.txt; fi
+          [ -n "$P12" ] || exit 0
+          printf '%s' "$P12" | tr -d '\r\n ' | base64 -d > "$RUNNER_TEMP/mt/c.p12"
+          if openssl pkcs12 -in "$RUNNER_TEMP/mt/c.p12" -passin env:PW -nodes -out "$RUNNER_TEMP/mt/c.pem" 2>"$RUNNER_TEMP/mt/err"; then
+            echo "p12 ok" | tee -a probe/secrets.txt
+          elif openssl pkcs12 -legacy -in "$RUNNER_TEMP/mt/c.p12" -passin env:PW -nodes -out "$RUNNER_TEMP/mt/c.pem" 2>>"$RUNNER_TEMP/mt/err"; then
+            echo "p12 ok (legacy)" | tee -a probe/secrets.txt
+          else
+            echo "P12_FEHLER: $(head -c 300 "$RUNNER_TEMP/mt/err" | tr '\n' ' ')" | tee -a probe/secrets.txt
+          fi
+          rm -f "$RUNNER_TEMP/mt/c.p12"
+          # nur Metadaten des Zertifikats (kein Schlüssel)
+          openssl x509 -in "$RUNNER_TEMP/mt/c.pem" -noout -subject -enddate 2>/dev/null | sed 's/^/zert: /' | tee -a probe/secrets.txt || true
+
+      - name: Daten abrufen
+        run: |
+          PEM="$RUNNER_TEMP/mt/c.pem"
+          [ -s "$PEM" ] || { echo "kein Zertifikat"; exit 0; }
+          python3 - <<'PY' > "$RUNNER_TEMP/mt/list.txt"
+          import json
+          for a in json.load(open('tools/mobilithek.json'))['abos']:
+              print(a['name'], a['art'], a['id'])
+          PY
+          while read -r NAME ART ID; do
+            HDR=()
+            # Delta-Angebote: alter Zeitstempel → ältestes vollständiges Paket im Puffer
+            [ "$ART" = "dyn" ] && HDR=(-H "If-Modified-Since: Mon, 01 Jan 2024 00:00:00 GMT")
+            for URL in \
+              "https://mobilithek.info:8443/mobilithek/api/v1.0/subscription?subscriptionID=$ID" \
+              "https://mobilithek.info:8443/mobilithek/api/v1.0/subscription/datexv3?subscriptionID=$ID"; do
+              CODE=$(curl -sS --max-time 300 --cert "$PEM" --compressed -H 'Accept-Encoding: gzip' "${HDR[@]}" \
+                     -o "probe/raw/$NAME.json" -w '%{http_code}' "$URL" || echo "curl-fehler")
+              echo "$NAME $CODE $(stat -c %s "probe/raw/$NAME.json" 2>/dev/null || echo 0) $URL"
+              if [ "$CODE" = "200" ]; then break; fi
+            done
+            echo "$CODE" > "probe/raw/$NAME.status"
+          done < "$RUNNER_TEMP/mt/list.txt"
+          rm -f "$PEM"
+
+      - name: Auswerten
+        run: |
+          python3 tools/mobilithek_probe.py probe/raw probe
+          cat probe/secrets.txt 2>/dev/null || true
+
+      - name: Zusammenfassung ablegen (Branch mobilithek-probe)
+        run: |
+          mkdir -p "$RUNNER_TEMP/out"
+          cp probe/summary.json probe/summary.txt "$RUNNER_TEMP/out/" 2>/dev/null || true
+          cp probe/secrets.txt "$RUNNER_TEMP/out/zugang.txt" 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan mobilithek-probe
+          git rm -rf --cached . >/dev/null
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp "$RUNNER_TEMP/out/"* .
+          git add -A
+          git commit -m "Mobilithek-Testabruf $(date -u +%FT%TZ)"
+          git push -f origin mobilithek-probe
