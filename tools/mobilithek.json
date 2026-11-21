@@ -1,0 +1,16 @@
+{
+  "_hinweis": "Abonnements bei der Mobilithek (Organisation Gespann-Lader). Die IDs allein geben keinen Zugriff, dafür braucht es das Maschinenzertifikat (GitHub-Secret MOBILITHEK_P12).",
+  "abos": [
+    {"name": "enbw-stat", "betreiber": "EnBW", "art": "stat", "id": "1060993557803548672", "lizenz": "CC BY 4.0, Quelle: EnBW AG"},
+    {"name": "enbw-dyn", "betreiber": "EnBW", "art": "dyn", "id": "1060992396325441536", "lizenz": "CC BY 4.0, Quelle: EnBW AG"},
+    {"name": "tesla-stat", "betreiber": "Tesla", "art": "stat", "id": "1060994192167030784", "lizenz": "Open Data"},
+    {"name": "tesla-dyn", "betreiber": "Tesla", "art": "dyn", "id": "1060993970858606592", "lizenz": "Open Data"},
+    {"name": "ewe-stat", "betreiber": "EWE Go", "art": "stat", "id": "1060994880468926464", "lizenz": "Open Data"},
+    {"name": "ewe-dyn", "betreiber": "EWE Go", "art": "dyn", "id": "1060994255983198208", "lizenz": "Open Data"},
+    {"name": "vw-stat", "betreiber": "Volkswagen Group Charging", "art": "stat", "id": "1060994955664576512", "lizenz": "Open Data"},
+    {"name": "vw-dyn", "betreiber": "Volkswagen Group Charging", "art": "dyn", "id": "1060994692929011712", "lizenz": "Open Data"},
+    {"name": "eclearing-stat", "betreiber": "e-clearing.net", "art": "stat", "id": "1060996873161953280", "lizenz": "Open Data"},
+    {"name": "eclearing-dyn", "betreiber": "e-clearing.net", "art": "dyn", "id": "1060996252903915520", "lizenz": "Open Data"},
+    {"name": "chargecloud-dyn", "betreiber": "chargecloud", "art": "dyn", "id": "1060997434921865216", "lizenz": "Open Data"}
+  ]
+}
