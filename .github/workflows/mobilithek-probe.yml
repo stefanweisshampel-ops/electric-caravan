@@ -26,11 +26,20 @@ jobs:
           P12: ${{ secrets.MOBILITHEK_P12 }}
           PW: ${{ secrets.MOBILITHEK_P12_PASSWORT }}
         run: |
+          set +e
           mkdir -p probe/raw "$RUNNER_TEMP/mt"
-          if [ -z "$P12" ]; then echo "SECRET_FEHLT MOBILITHEK_P12" | tee probe/secrets.txt; fi
+          : > probe/secrets.txt
+          if [ -z "$P12" ]; then echo "SECRET_FEHLT MOBILITHEK_P12" | tee -a probe/secrets.txt; fi
           if [ -z "$PW" ]; then echo "SECRET_FEHLT MOBILITHEK_P12_PASSWORT" | tee -a probe/secrets.txt; fi
           [ -n "$P12" ] || exit 0
-          printf '%s' "$P12" | tr -d '\r\n ' | base64 -d > "$RUNNER_TEMP/mt/c.p12"
+          # nur Längen und Zeichenklassen melden, nie den Inhalt
+          CLEAN=$(printf '%s' "$P12" | tr -d '\r\n\t ')
+          echo "P12-Text: ${#P12} Zeichen, bereinigt ${#CLEAN}, Fremdzeichen: $(printf '%s' "$CLEAN" | tr -d 'A-Za-z0-9+/=' | wc -c); Passwort: ${#PW} Zeichen" | tee -a probe/secrets.txt
+          if ! printf '%s' "$CLEAN" | base64 -d > "$RUNNER_TEMP/mt/c.p12" 2>"$RUNNER_TEMP/mt/b64err"; then
+            echo "BASE64_FEHLER: $(head -c 200 "$RUNNER_TEMP/mt/b64err" | tr '\n' ' ')" | tee -a probe/secrets.txt
+            exit 0
+          fi
+          echo "P12-Datei: $(stat -c %s "$RUNNER_TEMP/mt/c.p12") Bytes" | tee -a probe/secrets.txt
           if openssl pkcs12 -in "$RUNNER_TEMP/mt/c.p12" -passin env:PW -nodes -out "$RUNNER_TEMP/mt/c.pem" 2>"$RUNNER_TEMP/mt/err"; then
             echo "p12 ok" | tee -a probe/secrets.txt
           elif openssl pkcs12 -legacy -in "$RUNNER_TEMP/mt/c.p12" -passin env:PW -nodes -out "$RUNNER_TEMP/mt/c.pem" 2>>"$RUNNER_TEMP/mt/err"; then
@@ -43,7 +52,9 @@ jobs:
           openssl x509 -in "$RUNNER_TEMP/mt/c.pem" -noout -subject -enddate 2>/dev/null | sed 's/^/zert: /' | tee -a probe/secrets.txt || true
 
       - name: Daten abrufen
+        if: always()
         run: |
+          set +e
           PEM="$RUNNER_TEMP/mt/c.pem"
           [ -s "$PEM" ] || { echo "kein Zertifikat"; exit 0; }
           python3 - <<'PY' > "$RUNNER_TEMP/mt/list.txt"
@@ -68,11 +79,13 @@ jobs:
           rm -f "$PEM"
 
       - name: Auswerten
+        if: always()
         run: |
           python3 tools/mobilithek_probe.py probe/raw probe
           cat probe/secrets.txt 2>/dev/null || true
 
       - name: Zusammenfassung ablegen (Branch mobilithek-probe)
+        if: always()
         run: |
           mkdir -p "$RUNNER_TEMP/out"
           cp probe/summary.json probe/summary.txt "$RUNNER_TEMP/out/" 2>/dev/null || true
