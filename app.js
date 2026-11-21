@@ -422,7 +422,7 @@
     if (dy < 0) setSheet(s === 'small' ? 'mid' : 'big'); else setSheet(s === 'big' ? 'mid' : 'small');
   });
 
-  const legalHtml = '<div class="legal"><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></div>';
+  const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></div>';
   function rowHtml(s, extra) {
     const st = statusOf(s);
     const sub = [];
@@ -492,6 +492,7 @@
     $('#routechip').style.display = 'flex'; document.body.classList.add('route');
     if (sheetSize() === 'small') setSheet('mid');
     redrawMarkers(); renderList();
+    setHash(a);
     fitTo(sites.filter((s) => s.A[a] !== undefined).map((s) => [s.lat, s.lon]));
   }
   function endRoute() {
@@ -499,6 +500,7 @@
     if (mapReady) map.getSource('route').setData({ type: 'FeatureCollection', features: [] });
     $('#routechip').style.display = 'none'; document.body.classList.remove('route');
     redrawMarkers(); renderList();
+    setHash('');
   }
   $('#rcx').addEventListener('click', endRoute);
   $('#rcflip').addEventListener('click', () => { route.dir *= -1; store('gl-dir-' + route.a, route.dir); if (!detail) renderList(); });
@@ -510,9 +512,30 @@
     redrawMarkers();
     renderDetail();
     loadNotes(s);
+    setHash('s=' + s.key);
     if (fly) focusSite(s, 15);
   }
-  function closeDetail() { detail = null; pending = null; redrawMarkers(); renderList(); }
+  function closeDetail() { detail = null; pending = null; redrawMarkers(); renderList(); setHash(route ? route.a : ''); }
+
+  // ---------- teilbare Links: #A9 oder #s=DE-51.5000_11.9000 ----------
+  function setHash(h) {
+    try {
+      if (/access_token|error_description/.test(location.hash)) return;  // Anmelde-Link noch nicht verarbeitet
+      history.replaceState(null, '', h ? '#' + h : location.pathname + location.search);
+    } catch (e) { /* egal */ }
+  }
+  function applyHash() {
+    let h = '';
+    try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) { return; }
+    if (!h || /access_token|error/.test(h)) return;
+    const am = /^a\s*(\d{1,3})$/i.exec(h);
+    if (am && AS.has('A' + am[1])) { q.value = 'A' + am[1]; startRoute('A' + am[1]); return; }
+    const sm = /^s=([A-Z]{2}-[-0-9.]+_[-0-9.]+)$/.exec(h);
+    if (sm && siteByKey.has(sm[1])) {
+      openDetail(siteByKey.get(sm[1]), true);
+    }
+  }
+  window.addEventListener('hashchange', applyHash);
 
   const ICON = {
     sat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>',
@@ -741,6 +764,7 @@
     try { await initMap(); } catch (e) { toast('Die Karte konnte nicht gestartet werden.', 5000); }
     redrawMarkers();
     renderList();
+    applyHash();
   }
   boot();
 })();

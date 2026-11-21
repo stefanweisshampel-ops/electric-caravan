@@ -1,0 +1,37 @@
+/* Gemeinsame Gestaltung der Text- und Autobahnseiten */
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1d2329; background: #f7f6f2; }
+a { color: #0f5f6e; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 18px; background: #fff; border-bottom: 1px solid #e3e1da; }
+.brand { font-weight: 700; font-size: 18px; text-decoration: none; color: #1d2329; }
+.top nav a { margin-left: 16px; text-decoration: none; font-weight: 500; }
+main { max-width: 1000px; margin: 0 auto; padding: 18px 18px 40px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 6px 0 12px; }
+h2 { font-size: 20px; margin: 28px 0 8px; }
+.crumbs { font-size: 14px; color: #5c6670; margin: 0; }
+.lead { font-size: 17px; color: #2e363d; max-width: 760px; }
+.hint { font-size: 14px; color: #5c6670; }
+.btn { display: inline-block; background: #0f5f6e; color: #fff; text-decoration: none; font-weight: 600; padding: 10px 16px; border-radius: 10px; }
+.box { background: #e2f2e8; border: 1px solid #bfe0cb; border-radius: 12px; padding: 10px 14px; margin: 14px 0; font-size: 15px; }
+.tw { overflow-x: auto; background: #fff; border: 1px solid #e3e1da; border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #eeece6; vertical-align: top; }
+th { font-size: 13px; color: #5c6670; font-weight: 600; background: #fbfaf7; position: sticky; top: 0; }
+td.km { font-variant-numeric: tabular-nums; white-space: nowrap; color: #5c6670; }
+td.num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gap { display: block; font-size: 12px; color: #8a939b; }
+.sub { font-size: 13px; color: #5c6670; }
+.b { display: inline-block; font-size: 13px; font-weight: 600; padding: 2px 9px; border-radius: 99px; white-space: nowrap; }
+.b.ja { background: #e2f2e8; color: #126a37; }
+.b.eng { background: #fbefd6; color: #8a5800; }
+.b.nein { background: #f8e1e1; color: #9e2626; }
+.b.open { background: #eef0f2; color: #55606b; font-weight: 500; }
+td small { display: block; font-size: 12px; color: #8a939b; }
+.alist { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.alist li { background: #fff; border: 1px solid #e3e1da; border-radius: 10px; padding: 9px 12px; }
+.alist li span { display: block; font-size: 13px; color: #5c6670; }
+.alist a { text-decoration: none; font-size: 17px; }
+article { max-width: 760px; }
+article li { margin: 4px 0; }
+footer { max-width: 1000px; margin: 0 auto; padding: 0 18px 30px; font-size: 13px; color: #5c6670; }
+@media (max-width: 600px) { h1 { font-size: 23px; } th, td { padding: 8px 7px; font-size: 14px; } .top nav a { margin-left: 12px; } }
