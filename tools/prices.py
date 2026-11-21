@@ -56,6 +56,7 @@ PRICES = [
 ]
 ADAC = {'aral': 0.57}  # ADAC e-Charge (Mitglieder, keine Grundgebühr)
 MOTION = {'ionity': 0.49}  # IONITY Motion: Abo 5,99 €/Monat, ab 0,49 €/kWh (ionity.eu, electrive 06/2026)
+ENBW_M = {'enbw': 0.46}  # EnBW mobility+ Ladetarif M: Abo 5,99 €/Monat (ACV-Mitglieder 3,99 €), 0,46 €/kWh an EnBW-Säulen (EnBW Tarifkachel Stand 01.12.2025, electrive 06/2026)
 
 _compiled = [(p, re.compile(p[2])) for p in PRICES]
 

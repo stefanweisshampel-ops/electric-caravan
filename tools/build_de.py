@@ -346,7 +346,7 @@ places.sort(key=lambda p: -p[4])
 import prices as PR
 data = {'stand': STAND, 'fields': FIELDS, 'ops': ops, 'sites': out_rows, 'places': places,
         'axes': {a: axes[a][4] for a in axes},
-        'prices': PR.export(), 'adac': PR.ADAC, 'motion': PR.MOTION, 'opPrice': [PR.price_index(o) for o in ops],
+        'prices': PR.export(), 'adac': PR.ADAC, 'motion': PR.MOTION, 'enbwm': PR.ENBW_M, 'opPrice': [PR.price_index(o) for o in ops],
         'priceStand': PR.PRICE_STAND}
 data['country'] = 'DE'
 json.dump(data, open(os.path.join(OUT, 'DE', 'sites.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
