@@ -21,9 +21,12 @@
 <meta property="og:image:alt" content="Gespann-Lader: Karte der Schnelllader in Deutschland mit den Bewertungen Durchfahrt möglich, Nur wenn wenig los, Abkoppeln nötig">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="vendor/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=20261121a">
+<link rel="stylesheet" href="style.css?v=20261121b">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Gespann-Lader", "url": "https://gespann-lader.de/", "description": "Karte der Schnellladesäulen, an denen man mit E-Auto und Wohnwagen oder Anhänger laden kann, ohne abzukoppeln – bewertet von Gespannfahrern.", "applicationCategory": "TravelApplication", "operatingSystem": "Web", "inLanguage": "de", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "image": "https://gespann-lader.de/og.png"}</script>
 </head>
 <body>
+<h1 class="sr">Gespann-Lader – Schnelllader mit Durchfahrt für E-Autos mit Wohnwagen oder Anhänger</h1>
+<noscript><div style="padding:20px;max-width:700px;font:16px/1.5 sans-serif"><p><b>Gespann-Lader</b> zeigt Schnellladesäulen, an denen man mit E-Auto und Wohnwagen oder Anhänger laden kann, ohne abzukoppeln – bewertet von Gespannfahrern. Für die Karte wird JavaScript benötigt.</p><p><a href="/autobahn/">Schnelllader nach Autobahn</a> · <a href="/ratgeber/">Ratgeber: E-Auto mit Wohnwagen laden</a> · <a href="/impressum.html">Impressum</a></p></div></noscript>
 <div id="loading">Lade Ladesäulendaten …</div>
 <div id="map"></div>
 
@@ -91,6 +94,7 @@
     <p><b>Preise ohne Abo:</b> Pro Betreiber hinterlegt sind der Ad-hoc-Preis und, falls vorhanden, der Preis der eigenen App ohne Grundgebühr, jeweils fürs Schnellladen. Gefiltert wird mit dem günstigsten davon; bei Preisspannen zählt der untere Wert. Fremde Ladekarten sind nicht eingerechnet. Verbindlich ist immer der Preis vor dem Ladestart.</p>
     <p id="istand"></p>
     <p><b>Quellen:</b> Ladesäulenregister der Bundesnetzagentur (CC BY 4.0), aufbereitet von <a href="https://github.com/ratopi/ladesaeule">ratopi/ladesaeule</a> · Karte: <a href="https://openfreemap.org">OpenFreeMap</a>, Kartendaten © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende · Autobahnachsen: <a href="https://www.naturalearthdata.com/">Natural Earth</a>.</p>
+    <p><a href="/autobahn/">Schnelllader nach Autobahn</a> · <a href="/ratgeber/">Ratgeber: Laden mit Wohnwagen</a></p>
     <p><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
   </div>
 </div>
@@ -98,8 +102,8 @@
 
 <script src="vendor/maplibre-gl.js"></script>
 <script src="vendor/supabase.js"></script>
-<script src="config.js?v=20261121a"></script>
-<script>window.GL_VERSION = "20261121a";</script>
-<script src="app.js?v=20261121a"></script>
+<script src="config.js?v=20261121b"></script>
+<script>window.GL_VERSION = "20261121b";</script>
+<script src="app.js?v=20261121b"></script>
 </body>
 </html>
