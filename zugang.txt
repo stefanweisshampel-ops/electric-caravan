@@ -1,0 +1,3 @@
+SECRET_FEHLT MOBILITHEK_P12_PASSWORT
+P12-Text: 108 Zeichen, bereinigt 106, Fremdzeichen: 23; Passwort: 0 Zeichen
+BASE64_FEHLER: base64: error: invalid input 
