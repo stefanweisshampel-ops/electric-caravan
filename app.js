@@ -88,6 +88,15 @@
       sites.push(s);
     });
   }
+  let AFIR_STAND = '';
+  function applyAfir(a) {
+    if (!a || !a.s) return;
+    AFIR_STAND = a.stand || '';
+    Object.keys(a.s).forEach((k) => {
+      const s = siteByKey.get(k), v = a.s[k]; if (!s) return;
+      s.afir = { tag: v[0], nacht: v[1], fee: v[2], block: v[3], src: a.src[v[4]] || { label: 'Betreiber', lic: '' }, trailer: !!v[5], len: v[6] };
+    });
+  }
   function nearestSite(lat, lon, maxKm) {
     let best = null, bd = maxKm;
     const cy = Math.round(lat / 0.01), cx = Math.round(lon / 0.01);
@@ -111,6 +120,9 @@
     if (st.eng === m) return 'eng';
     return 'ja';
   }
+  // Betreiber meldet "für Pkw mit Anhänger/Wohnwagen geeignet" (AFIR-Daten über die Mobilithek)
+  const opTrailer = (s) => !!(s.afir && s.afir.trailer);
+  function effStatus(s) { return statusOf(s) || (opTrailer(s) ? 'ja' : null); }
   function applyStats(rows) {
     ratedSites.forEach((s) => { s.st = null; s.statKey = null; });
     ratedSites = new Set();
@@ -283,9 +295,9 @@
 
   // ---------- prices ----------
   function bestPrice(s) {
-    const p = s.price; if (!p) return null;
-    const c = [];
-    if (p.adhoc) c.push(p.adhoc[0]);
+    const p = s.price, c = [];
+    if (s.afir && s.afir.tag != null) c.push(s.afir.tag); else if (p && p.adhoc) c.push(p.adhoc[0]);
+    if (!p) return c.length ? c[0] : null;
     if (p.app) c.push(p.app[0]);
     if (F.adac && s.adac != null) c.push(s.adac);
     if (F.motion && s.motion != null) c.push(s.motion);
@@ -306,7 +318,7 @@
       const bp = bestPrice(s);
       if (bp == null) { if (F.hideUnknown) return false; } else if (bp > F.maxPrice + 1e-9) return false;
     }
-    const st = statusOf(s);
+    const st = effStatus(s);
     if (F.stat === 'ja' && st !== 'ja') return false;
     if (F.stat === 'offen' && st) return false;
     if (F.stat === 'ohne-nein' && st === 'nein') return false;
@@ -314,7 +326,7 @@
     return true;
   }
   const filterActive = () => Object.keys(DEFAULTS).some((k) => F[k] !== DEFAULTS[k]);
-  const colorKey = (s) => (s.truck ? 'truck' : (statusOf(s) || 'open'));
+  const colorKey = (s) => (s.truck ? 'truck' : (effStatus(s) || 'open'));
   const colorOf = (s) => COLORS[colorKey(s)];
 
   // ---------- map ----------
@@ -430,6 +442,7 @@
     const sub = [];
     if (!route && s.mw != null && s.mw <= 3) sub.push(fmtKm(s.mw) + ' zur Autobahn');
     if (st) { const n = s.st.ja + s.st.eng + s.st.nein; sub.push(STATUS_TXT[st] + (n > 1 ? ' (' + n + ' Bewertungen)' : '')); }
+    else if (opTrailer(s)) sub.push('Durchfahrt laut Betreiber');
     if (s.truck) sub.push('Lkw-Ladepark');
     if (s.term) sub.push('Kartenterminal');
     if (s.rest) sub.push('Autohof/Rastanlage');
@@ -545,10 +558,14 @@
     nav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>',
   };
   function priceHtml(s) {
-    const p = s.price;
+    const p = s.price, a = s.afir && s.afir.tag != null ? s.afir : null;
+    if (!p && a) {
+      return '<div class="sec price"><h4>Preise <span class="pbest">ab ' + fmtEur(a.tag) + '</span></h4><table>' +
+        afirRows(a).map(([k, v]) => '<tr><td>' + esc(k) + '</td><td>' + esc(v) + '</td></tr>').join('') + '</table>' + afirNote(a) + '</div>';
+    }
     if (!p) return '<div class="sec price"><h4>Preis ohne Abo</h4><div class="note" style="margin-top:0">Für diesen Betreiber ist kein Preis hinterlegt. Verbindlich ist der Preis, der vor dem Start an der Säule oder in der App angezeigt wird.</div></div>';
     const rng = (r) => r[0] === r[1] ? fmtEur(r[0]) : fmtEur(r[0]) + ' – ' + fmtEur(r[1]);
-    const rows = [['Ad hoc (Karte/QR)', p.adhoc ? rng(p.adhoc) : 'unbekannt']];
+    const rows = a ? afirRows(a) : [['Ad hoc (Karte/QR)', p.adhoc ? rng(p.adhoc) : 'unbekannt']];
     if (p.app) rows.push(['App ohne Grundgebühr' + (p.appName ? ' (' + p.appName + ')' : ''), rng(p.app)]);
     if (s.adac != null) rows.push(['ADAC e-Charge (Mitglieder)', fmtEur(s.adac) + (F.adac ? '' : ' – im Filter ausgeschaltet')]);
     if (s.motion != null) rows.push(['IONITY Motion (Abo 5,99 €/Monat)', 'ab ' + fmtEur(s.motion) + (F.motion ? '' : ' – im Filter ausgeschaltet')]);
@@ -557,7 +574,18 @@
     return '<div class="sec price"><h4>Preise <span class="pbest' + (b != null && F.maxPrice != null && b > F.maxPrice ? ' over' : '') + '">' + (b != null ? 'ab ' + fmtEur(b) : '') + '</span></h4>' +
       '<table>' + rows.map(([k, v]) => '<tr><td>' + esc(k) + '</td><td>' + esc(v) + '</td></tr>').join('') + '</table>' +
       (p.note ? '<div class="note" style="margin-top:6px">' + esc(p.note) + '</div>' : '') +
-      '<div class="note" style="margin-top:6px">Betreiberpreis für ' + esc(p.label) + ', Schnellladen (DC). Quelle: ' + esc(p.src) + '. Verbindlich ist der Preis vor dem Ladestart.</div></div>';
+      (a ? afirNote(a) : '') +
+      '<div class="note" style="margin-top:6px">' + (a ? 'Weitere Preise für ' : 'Betreiberpreis für ') + esc(p.label) + ', Schnellladen (DC). Quelle: ' + esc(p.src) + '. Verbindlich ist der Preis vor dem Ladestart.</div></div>';
+  }
+  function afirRows(a) {
+    const rows = [['Ad hoc laut Betreiber', fmtEur(a.tag) + (a.nacht != null ? ' (nachts ab ' + fmtEur(a.nacht) + ')' : '')]];
+    if (a.fee != null) rows.push(['Startgebühr je Ladevorgang', fmtEur(a.fee)]);
+    if (a.block) rows.push(['Blockiergebühr', 'ab Minute ' + a.block[0] + ': ' + fmtEur(a.block[1]) + ' pro Minute']);
+    return rows;
+  }
+  function afirNote(a) {
+    return '<div class="note" style="margin-top:6px">Ad-hoc-Preis aus den AFIR-Daten von ' + esc(a.src.label) + ' (Mobilithek, ' + esc(a.src.lic) +
+      '), Stand ' + esc(String(AFIR_STAND).split('-').reverse().join('.')) + '.</div>';
   }
   function communityHtml(s) {
     const st = s.st;
@@ -625,11 +653,14 @@
       (s.truck ? '<div class="warn"><b>Lkw-Ladepark.</b> Pkw-Ladekarten funktionieren hier meist nicht.</div>' : '') +
       '<div class="chips">' + chips.join('') + '</div>' +
       '<div class="links">' + links + '</div>' +
-      '<div class="sec"><h4>Mit Gespann – Bewertungen</h4>' + communityHtml(s) + '</div>' +
+      '<div class="sec"><h4>Mit Gespann – Bewertungen</h4>' + communityHtml(s) +
+      (opTrailer(s) ? '<div class="note opok">Laut ' + esc(s.afir.src.label) + ' für Pkw mit Anhänger geeignet' +
+        (s.afir.len ? ' (Stellplatzlänge ' + String(s.afir.len).replace('.', ',') + ' m)' : '') +
+        '. Angabe des Betreibers aus den AFIR-Daten – ' + (statusOf(s) ? 'die Farbe richtet sich nach den Bewertungen.' : 'noch von niemandem bestätigt.') + '</div>' : '') + '</div>' +
       '<div class="sec"><h4>' + (s.mine ? 'Deine Bewertung' : 'Selbst bewerten') + '</h4>' + rateFormHtml(s) + '</div>' +
       priceHtml(s) +
       '<div class="note">Stationsdaten laut Ladesäulenregister der Bundesnetzagentur, Stand ' + esc((STAND[s.cc] || '').split('-').reverse().join('.')) +
-      '. Ob man mit Anhänger durchfahren kann, steht in keinem amtlichen Datensatz – die Bewertungen stammen von Nutzerinnen und Nutzern.</div></div>' + legalHtml;
+      '. Ob man mit Anhänger durchfahren kann, melden die Betreiber bisher kaum – die Bewertungen stammen von Nutzerinnen und Nutzern.</div></div>' + legalHtml;
     body.dataset.site = String(s.i);
     body.scrollTop = keepScroll;
     if (noteDraft != null && $('#note')) $('#note').value = noteDraft;
@@ -748,11 +779,14 @@
     try {
       const V = '?v=' + (window.GL_VERSION || Date.now());
       const countries = await fetchJson('data/countries.json' + V);
-      const [datas, mw] = await Promise.all([
+      const day = new Date().toISOString().slice(0, 10);
+      const [datas, mw, afir] = await Promise.all([
         Promise.all(countries.map((c) => fetchJson(c.file + V, 60000).then((d) => [c.code, d]))),
         fetchJson('data/mw.json' + V).catch(() => []),
+        fetchJson('data/DE/afir.json' + V + '&d=' + day).catch(() => null),
       ]);
       datas.forEach(([cc, d]) => decodeCountry(cc, d));
+      applyAfir(afir);
       MW = mw;
       places.sort((a, b) => b[4] - a[4]);
     } catch (e) {
@@ -761,7 +795,8 @@
     }
     const nCar = sites.filter((s) => !s.truck).length;
     $('#istand').innerHTML = '<b>Datenstand:</b> ' + Object.keys(STAND).map((cc) => cc + ' ' + esc(String(STAND[cc]).split('-').reverse().join('.'))).join(', ') +
-      ' · ' + nCar.toLocaleString('de-DE') + ' Pkw-Schnellladestandorte ab 50 kW · Preise recherchiert am ' + esc(PSTAND) + '.';
+      ' · ' + nCar.toLocaleString('de-DE') + ' Pkw-Schnellladestandorte ab 50 kW · Preise recherchiert am ' + esc(PSTAND) +
+      (AFIR_STAND ? ', Ad-hoc-Preise von EnBW, Tesla, EWE Go und vielen Stadtwerken direkt von den Betreibern (Mobilithek), Stand ' + esc(AFIR_STAND.split('-').reverse().join('.')) : '') + '.';
     $('#loading').style.display = 'none';
     renderList();
     initBackend();

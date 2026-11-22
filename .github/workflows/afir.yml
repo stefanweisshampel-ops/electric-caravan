@@ -1,0 +1,85 @@
+name: Preise der Betreiber (AFIR/Mobilithek)
+
+# Holt täglich die AFIR-Daten der abonnierten Betreiber über die Mobilithek und
+# schreibt Ad-hoc-Preise und Betreiberangaben (z. B. "für Pkw mit Anhänger geeignet")
+# nach data/DE/afir.json. Zugangsdaten: Secrets MOBILITHEK_P12 + MOBILITHEK_P12_PASSWORT.
+on:
+  schedule:
+    - cron: '41 4 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/afir.yml
+      - tools/afir_import.py
+
+permissions:
+  contents: write
+
+concurrency:
+  group: afir
+  cancel-in-progress: false
+
+jobs:
+  afir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Zertifikat
+        env:
+          P12: ${{ secrets.MOBILITHEK_P12 }}
+          PW: ${{ secrets.MOBILITHEK_P12_PASSWORT }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/mt" "$RUNNER_TEMP/afir"
+          printf '%s' "$P12" | tr -d '\r\n\t ' | base64 -d > "$RUNNER_TEMP/mt/c.p12"
+          openssl pkcs12 -in "$RUNNER_TEMP/mt/c.p12" -passin env:PW -nodes -out "$RUNNER_TEMP/mt/c.pem" 2>/dev/null \
+            || openssl pkcs12 -legacy -in "$RUNNER_TEMP/mt/c.p12" -passin env:PW -nodes -out "$RUNNER_TEMP/mt/c.pem"
+          rm -f "$RUNNER_TEMP/mt/c.p12"
+
+      - name: Daten abrufen
+        run: |
+          PEM="$RUNNER_TEMP/mt/c.pem"
+          python3 -c "import json;[print(a['name'],a['art'],a['id']) for a in json.load(open('tools/mobilithek.json'))['abos']]" > "$RUNNER_TEMP/list.txt"
+          while read -r NAME ART ID; do
+            # chargecloud liefert keine Preise, die Status-Daten von EnBW/Tesla/VW brauchen wir nicht
+            case "$NAME" in chargecloud-*|enbw-dyn|tesla-dyn|vw-dyn) continue;; esac
+            HDR=()
+            [ "$ART" = "dyn" ] && HDR=(-H "If-Modified-Since: Mon, 01 Jan 2024 00:00:00 GMT")
+            CODE=$(curl -sS --retry 2 --retry-delay 10 --max-time 300 --cert "$PEM" --compressed -H 'Accept-Encoding: gzip' "${HDR[@]}" \
+                   -o "$RUNNER_TEMP/afir/$NAME.json" -w '%{http_code}' \
+                   "https://mobilithek.info:8443/mobilithek/api/v1.0/subscription?subscriptionID=$ID" || echo "fehler")
+            echo "$NAME: HTTP $CODE, $(stat -c %s "$RUNNER_TEMP/afir/$NAME.json" 2>/dev/null || echo 0) Bytes"
+            [ "$CODE" = "200" ] || rm -f "$RUNNER_TEMP/afir/$NAME.json"
+          done < "$RUNNER_TEMP/list.txt"
+          rm -f "$PEM"
+
+      - name: Auswerten
+        run: |
+          python3 tools/afir_import.py "$RUNNER_TEMP/afir" data/DE/sites.json "$RUNNER_TEMP/afir.json"
+          # Schutz: bricht ein Abruf weg, nicht mit deutlich weniger Standorten überschreiben
+          python3 - <<'PY'
+          import json, os, shutil, subprocess
+          new = json.load(open(os.environ['RUNNER_TEMP'] + '/afir.json'))
+          try:
+              old = json.loads(subprocess.check_output(['git', 'show', 'HEAD:data/DE/afir.json']))
+          except Exception:
+              old = {'s': {}}
+          n_new, n_old = len(new['s']), len(old['s'])
+          print('Standorte alt/neu:', n_old, n_new)
+          if n_new < 0.6 * n_old:
+              print('Deutlich weniger Standorte als vorher – Datei bleibt unverändert.')
+          else:
+              shutil.copy(os.environ['RUNNER_TEMP'] + '/afir.json', 'data/DE/afir.json')
+          PY
+
+      - name: Speichern
+        run: |
+          git add data/DE/afir.json
+          if git diff --cached --quiet; then echo "keine Änderung"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Preise der Betreiber aktualisieren (AFIR/Mobilithek)"
+          git pull --rebase
+          git push

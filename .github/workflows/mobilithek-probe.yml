@@ -4,12 +4,6 @@ name: Mobilithek-Testabruf
 # (keine Rohdaten, keine Zugangsdaten) auf dem Branch "mobilithek-probe" ab.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/mobilithek-probe.yml
-      - tools/mobilithek_probe.py
-      - tools/mobilithek.json
 
 permissions:
   contents: write
