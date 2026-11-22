@@ -51,12 +51,12 @@ body.route #legend{top:112px}
        display:flex;flex-direction:column;height:42vh;transition:height .22s ease;max-width:720px;margin:0 auto}
 #sheet.small{height:118px}
 #sheet.big{height:86vh}
-#grab{padding:8px 0 2px;display:grid;place-items:center;cursor:grab;flex:none;border:0;background:none;width:100%}
+#grab{padding:10px 0 6px;display:grid;place-items:center;cursor:grab;flex:none;border:0;background:none;width:100%;touch-action:none}
 #grab span{width:42px;height:5px;border-radius:3px;background:#d0d5da;display:block}
-#sheethead{padding:4px 16px 10px;flex:none;display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line)}
+#sheethead{padding:4px 16px 10px;flex:none;display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);touch-action:none}
 #sheethead h2{font-size:17px;margin:0;font-weight:650}
 #sheethead .sub{font-size:13px;color:var(--ink3)}
-#body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+#body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
 .row{display:flex;gap:12px;align-items:flex-start;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
 .row:active{background:var(--paper)}
 .dot{width:12px;height:12px;border-radius:6px;flex:none;margin-top:4px;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}

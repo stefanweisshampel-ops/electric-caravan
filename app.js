@@ -445,14 +445,50 @@
   const sheet = $('#sheet');
   function setSheet(sz) { sheet.classList.remove('small', 'big'); if (sz !== 'mid') sheet.classList.add(sz); }
   function sheetSize() { return sheet.classList.contains('small') ? 'small' : sheet.classList.contains('big') ? 'big' : 'mid'; }
-  $('#grab').addEventListener('click', () => { const s = sheetSize(); setSheet(s === 'mid' ? 'big' : s === 'big' ? 'small' : 'mid'); });
-  let y0 = null;
-  $('#grab').addEventListener('touchstart', (e) => { y0 = e.touches[0].clientY; }, { passive: true });
-  $('#grab').addEventListener('touchend', (e) => {
-    if (y0 == null) return; const dy = e.changedTouches[0].clientY - y0; y0 = null;
-    if (Math.abs(dy) < 25) return;
-    const s = sheetSize();
-    if (dy < 0) setSheet(s === 'small' ? 'mid' : 'big'); else setSheet(s === 'big' ? 'mid' : 'small');
+  // Ziehen am Griff oder an der Kopfzeile (Handy): folgt dem Finger und rastet bei klein / mittel / groß ein.
+  // Pointer-Events mit touch-action:none, damit Android den Wisch nicht als Scrollen übernimmt und abbricht.
+  let drag = null, dragJustEnded = false;
+  const mobileSheet = () => window.matchMedia('(max-width: 899px)').matches;
+  const snapHeights = () => { const vh = window.innerHeight; return { small: 118, mid: 0.42 * vh, big: 0.86 * vh }; };
+  function dragStart(e) {
+    if (!mobileSheet() || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (e.target.closest('a, input, button:not(#grab)')) return;
+    drag = { id: e.pointerId, y0: e.clientY, h0: sheet.getBoundingClientRect().height, from: sheetSize(), moved: false, el: e.currentTarget };
+  }
+  function dragMove(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dy = e.clientY - drag.y0;
+    if (!drag.moved) {
+      if (Math.abs(dy) < 6) return;
+      drag.moved = true;
+      sheet.style.transition = 'none';
+      try { drag.el.setPointerCapture(drag.id); } catch (err) { /* egal */ }
+    }
+    const s = snapHeights();
+    sheet.style.height = Math.max(s.small, Math.min(s.big, drag.h0 - dy)) + 'px';
+  }
+  function dragEnd(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag; drag = null;
+    if (!d.moved) return;
+    dragJustEnded = true; setTimeout(() => { dragJustEnded = false; }, 80);
+    const s = snapHeights(), h = sheet.getBoundingClientRect().height, dy = e.clientY - d.y0;
+    const order = ['small', 'mid', 'big'];
+    let to = order.reduce((a, b) => (Math.abs(s[b] - h) < Math.abs(s[a] - h) ? b : a));
+    if (to === d.from && Math.abs(dy) > 40) to = order[Math.max(0, Math.min(2, order.indexOf(d.from) + (dy < 0 ? 1 : -1)))];
+    sheet.style.transition = ''; sheet.style.height = '';
+    setSheet(to);
+  }
+  ['#grab', '#sheethead'].forEach((sel) => {
+    const el = $(sel);
+    el.addEventListener('pointerdown', dragStart);
+    el.addEventListener('pointermove', dragMove);
+    el.addEventListener('pointerup', dragEnd);
+    el.addEventListener('pointercancel', dragEnd);
+  });
+  $('#grab').addEventListener('click', () => {
+    if (dragJustEnded) return;
+    const s = sheetSize(); setSheet(s === 'mid' ? 'big' : s === 'big' ? 'small' : 'mid');
   });
 
   const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></div>';
