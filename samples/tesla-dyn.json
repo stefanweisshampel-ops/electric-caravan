@@ -1,0 +1,93 @@
+{
+ "path": "/messageContainer/payload[]/aegiEnergyInfrastructureStatusPublication",
+ "tableKeys": {
+  "lang": "en",
+  "publicationTime": "2026-11-22T08:00:19Z",
+  "tableReference": "list",
+  "publicationCreator": "dict"
+ },
+ "site": {
+  "reference": {
+   "idG": "7b237cca-061e-4aeb-98fb-7197f805df35",
+   "versionG": "2026-11-16 21:26:59.23 +0000 UTC",
+   "targetClass": "FacilityObject"
+  },
+  "lastUpdated": "2026-11-22T08:00:18Z",
+  "energyInfrastructureStationStatus": [
+   {
+    "reference": {
+     "idG": "7b237cca-061e-4aeb-98fb-7197f805df35",
+     "versionG": "2026-11-16 21:26:59.23 +0000 UTC",
+     "targetClass": "FacilityObject"
+    },
+    "lastUpdated": "2026-11-22T08:00:18Z",
+    "refillPointStatus": [
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "idG": "DE*TSL*E0P16X9",
+        "versionG": "2026-11-22 08:00:19.95115872 +0000 UTC m=+201344.297099717",
+        "targetClass": "FacilityObject"
+       },
+       "lastUpdated": "2026-11-22T08:00:18Z",
+       "openingStatus": {
+        "value": "open"
+       },
+       "operationStatus": {
+        "value": "inOperation"
+       },
+       "statusDescription": {
+        "values": [
+         {
+          "lang": "en",
+          "value": "EVSE Status: AVAILABLE"
+         }
+        ]
+       },
+       "status": {
+        "value": "available"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "reference": {
+     "idG": "7b237cca-061e-4aeb-98fb-7197f805df35",
+     "versionG": "2026-11-16 21:26:59.23 +0000 UTC",
+     "targetClass": "FacilityObject"
+    },
+    "lastUpdated": "2026-11-22T08:00:18Z",
+    "refillPointStatus": [
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "idG": "DE*TSL*E0P169N",
+        "versionG": "2026-11-22 08:00:19.95115872 +0000 UTC m=+201344.297099717",
+        "targetClass": "FacilityObject"
+       },
+       "lastUpdated": "2026-11-22T08:00:18Z",
+       "openingStatus": {
+        "value": "temporarilyClosed"
+       },
+       "operationStatus": {
+        "value": "notInOperation"
+       },
+       "statusDescription": {
+        "values": [
+         {
+          "lang": "en",
+          "value": "EVSE Status: DOWN"
+         }
+        ]
+       },
+       "status": {
+        "value": "outOfOrder"
+       }
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,895 @@
+{
+ "path": "/payload/aegiEnergyInfrastructureTablePublication/energyInfrastructureTable[]",
+ "tableKeys": {
+  "idG": "b5970c24-7ecf-4690-9770-6a34ff706a7f",
+  "versionG": "1",
+  "tableName": "DE*EWE"
+ },
+ "site": {
+  "idG": "f8e6bea4-a375-4970-8305-74db4cec9ac8",
+  "versionG": "1",
+  "name": {
+   "values": [
+    {
+     "lang": "de",
+     "value": "007189"
+    }
+   ]
+  },
+  "lastUpdated": "2026-11-22T14:42:47.613Z",
+  "typeOfSite": {
+   "value": "openSpace"
+  },
+  "locationReference": {
+   "locAreaLocation": {
+    "coordinatesForDisplay": {
+     "latitude": 51.79941,
+     "longitude": 9.69926
+    },
+    "locLocationExtensionG": {
+     "FacilityLocation": {
+      "timeZone": "+01:00",
+      "address": {
+       "postcode": "37586",
+       "city": {
+        "values": [
+         {
+          "lang": "de",
+          "value": "Dassel"
+         }
+        ]
+       },
+       "countryCode": "DE",
+       "addressLine": [
+        {
+         "order": 0,
+         "type": {
+          "value": "street"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Ilmestraße"
+           }
+          ]
+         }
+        },
+        {
+         "order": 1,
+         "type": {
+          "value": "houseNumber"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "1C"
+           }
+          ]
+         }
+        }
+       ]
+      },
+      "nutsArea": [
+       {
+        "nutsCodeType": {
+         "value": "nuts1Code"
+        },
+        "nutsCode": "DE9"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "operatingHours": {
+   "afacOpenAllHours": {}
+  },
+  "operator": {
+   "afacAnOrganisation": {
+    "name": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "DE*EWE"
+      }
+     ]
+    },
+    "legalName": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "EWE Go GmbH"
+      }
+     ]
+    },
+    "organisationUnit": [
+     {
+      "contactInformation": [
+       {
+        "afacContactInformation": {
+         "eMail": "info@ewe-go.de",
+         "telephoneNumber": "+49 441361520"
+        }
+       }
+      ]
+     }
+    ],
+    "externalIdentifier": [
+     {
+      "identifier": "DE*EWE",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorId"
+      }
+     },
+     {
+      "identifier": "BNA000317",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorIdBNetzA"
+      }
+     }
+    ]
+   }
+  },
+  "energyInfrastructureStation": [
+   {
+    "idG": "63853520-3bf6-447e-98dd-3dc3737be5e6",
+    "versionG": "1",
+    "lastUpdated": "2026-11-22T10:22:10.196Z",
+    "totalMaximumPower": 150000,
+    "numberOfRefillPoints": 2,
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "operatingHours": {
+     "afacOpenAllHours": {}
+    },
+    "locationReference": {
+     "locPointLocation": {
+      "coordinatesForDisplay": {
+       "latitude": 51.79941,
+       "longitude": 9.69926
+      },
+      "locLocationExtensionG": {
+       "FacilityLocation": {
+        "timeZone": "+01:00",
+        "address": {
+         "postcode": "37586",
+         "city": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Dassel"
+           }
+          ]
+         },
+         "countryCode": "DE",
+         "addressLine": [
+          {
+           "order": 0,
+           "type": {
+            "value": "street"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "Ilmestraße"
+             }
+            ]
+           }
+          },
+          {
+           "order": 1,
+           "type": {
+            "value": "houseNumber"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "1C"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        "nutsArea": [
+         {
+          "nutsCodeType": {
+           "value": "nuts1Code"
+          },
+          "nutsCode": "DE9"
+         }
+        ]
+       }
+      },
+      "pointByCoordinates": {
+       "pointCoordinates": {
+        "latitude": 51.79941,
+        "longitude": 9.69926
+       }
+      }
+     }
+    },
+    "amenities": {
+     "roofed": false,
+     "illuminated": false
+    },
+    "externalIdentifier": [
+     {
+      "identifier": "1117416",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "stationIdBNetzA"
+      }
+     }
+    ],
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "apps"
+     },
+     {
+      "value": "rfid"
+     },
+     {
+      "value": "creditCard"
+     },
+     {
+      "value": "debitCard"
+     }
+    ],
+    "dedicatedParkingSpaces": [
+     {
+      "idG": "63853520-3bf6-447e-98dd-3dc3737be5e6:parking",
+      "versionG": "1",
+      "numberOfSpaces": 2,
+      "amenities": {
+       "roofed": false,
+       "illuminated": false
+      }
+     },
+     {
+      "idG": "63853520-3bf6-447e-98dd-3dc3737be5e6:parking-disabled",
+      "versionG": "1",
+      "numberOfSpaces": 0,
+      "userSpecific": [
+       {
+        "value": "personsWithDisabilities"
+       }
+      ],
+      "amenities": {
+       "roofed": false,
+       "illuminated": false
+      }
+     }
+    ],
+    "userInterfaceLanguage": [
+     "de",
+     "en"
+    ],
+    "applicableForVehicles": [
+     {
+      "comVehicleCharacteristicsExtensionG": {
+       "VehicleCharacteristicsExtended": {
+        "euVehicleCategory": [
+         {
+          "value": "m1"
+         },
+         {
+          "value": "n1"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "operator": {
+     "afacAnOrganisation": {
+      "name": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "DE*EWE"
+        }
+       ]
+      },
+      "legalName": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "EWE Go GmbH"
+        }
+       ]
+      },
+      "organisationUnit": [
+       {
+        "contactInformation": [
+         {
+          "afacContactInformation": {
+           "eMail": "info@ewe-go.de",
+           "telephoneNumber": "+49 441361520"
+          }
+         }
+        ]
+       }
+      ],
+      "externalIdentifier": [
+       {
+        "identifier": "DE*EWE",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorId"
+        }
+       },
+       {
+        "identifier": "BNA000317",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorIdBNetzA"
+        }
+       }
+      ]
+     }
+    },
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "45c64395-22bf-4c2e-9bb9-ecb418e3f27f",
+       "versionG": "1",
+       "lastUpdated": "2026-11-22T03:55:42.027Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "usageType": [
+        {
+         "value": "electricVehicle"
+        }
+       ],
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        500
+       ],
+       "availableChargingPower": [
+        150000
+       ],
+       "externalIdentifier": [
+        {
+         "identifier": "DE*EWE*E007189S02*01",
+         "typeOfIdentifier": {
+          "value": "extendedG",
+          "extendedValueG": "evseId"
+         }
+        }
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000
+        }
+       ],
+       "electricEnergy": [
+        {
+         "energyRate": [
+          {
+           "idG": "2265e095-2970-480e-be9e-243243ef5026",
+           "ratePolicy": {
+            "value": "adHoc"
+           },
+           "lastUpdated": "2026-08-27T14:59:03.005Z",
+           "applicableCurrency": [
+            "EUR"
+           ],
+           "energyPrice": [
+            {
+             "priceType": {
+              "value": "pricePerKWh"
+             },
+             "value": 0.85,
+             "taxIncluded": true,
+             "taxRate": 19,
+             "overallPeriod": {
+              "overallStartTime": "2026-08-12T09:25:02.612Z",
+              "validPeriod": [
+               {
+                "recurringDayWeekMonthPeriod": [
+                 {
+                  "comDayWeekMonth": {
+                   "applicableDay": [
+                    {
+                     "value": "monday"
+                    },
+                    {
+                     "value": "tuesday"
+                    },
+                    {
+                     "value": "wednesday"
+                    },
+                    {
+                     "value": "thursday"
+                    },
+                    {
+                     "value": "friday"
+                    },
+                    {
+                     "value": "saturday"
+                    },
+                    {
+                     "value": "sunday"
+                    }
+                   ]
+                  }
+                 }
+                ]
+               }
+              ]
+             }
+            }
+           ],
+           "rateName": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "EWE AdHoc HPC"
+             }
+            ]
+           },
+           "payment": {
+            "paymentMeans": [
+             {
+              "value": "paymentCreditCard"
+             },
+             {
+              "value": "paymentDebitCard"
+             }
+            ],
+            "brandsAccepted": [
+             {
+              "value": "visa"
+             },
+             {
+              "value": "masterCard"
+             },
+             {
+              "value": "giroCard"
+             },
+             {
+              "value": "applePay"
+             },
+             {
+              "value": "other"
+             }
+            ]
+           }
+          }
+         ],
+         "isGreenEnergy": true,
+         "energyProductName": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Strom Naturwatt pro"
+           }
+          ]
+         },
+         "carbonDioxideImpact": 0,
+         "nuclearWasteImpact": 0
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "387ac3cf-1a45-4f62-933a-47680e59539d",
+       "versionG": "1",
+       "lastUpdated": "2026-11-22T10:22:10.196Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "usageType": [
+        {
+         "value": "electricVehicle"
+        }
+       ],
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        500
+       ],
+       "availableChargingPower": [
+        150000
+       ],
+       "externalIdentifier": [
+        {
+         "identifier": "DE*EWE*E007189S02*02",
+         "typeOfIdentifier": {
+          "value": "extendedG",
+          "extendedValueG": "evseId"
+         }
+        }
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000
+        }
+       ],
+       "electricEnergy": [
+        {
+         "energyRateByReference": [
+          {
+           "targetClass": "aegiEnergyRate",
+           "idG": "2265e095-2970-480e-be9e-243243ef5026"
+          }
+         ],
+         "isGreenEnergy": true,
+         "energyProductName": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Strom Naturwatt pro"
+           }
+          ]
+         },
+         "carbonDioxideImpact": 0,
+         "nuclearWasteImpact": 0
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "idG": "ab850578-3556-41c5-91b2-5c29e5a68441",
+    "versionG": "1",
+    "lastUpdated": "2026-11-22T14:42:47.836Z",
+    "totalMaximumPower": 150000,
+    "numberOfRefillPoints": 2,
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "operatingHours": {
+     "afacOpenAllHours": {}
+    },
+    "locationReference": {
+     "locPointLocation": {
+      "coordinatesForDisplay": {
+       "latitude": 51.79941,
+       "longitude": 9.69926
+      },
+      "locLocationExtensionG": {
+       "FacilityLocation": {
+        "timeZone": "+01:00",
+        "address": {
+         "postcode": "37586",
+         "city": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Dassel"
+           }
+          ]
+         },
+         "countryCode": "DE",
+         "addressLine": [
+          {
+           "order": 0,
+           "type": {
+            "value": "street"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "Ilmestraße"
+             }
+            ]
+           }
+          },
+          {
+           "order": 1,
+           "type": {
+            "value": "houseNumber"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "1C"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        "nutsArea": [
+         {
+          "nutsCodeType": {
+           "value": "nuts1Code"
+          },
+          "nutsCode": "DE9"
+         }
+        ]
+       }
+      },
+      "pointByCoordinates": {
+       "pointCoordinates": {
+        "latitude": 51.79941,
+        "longitude": 9.69926
+       }
+      }
+     }
+    },
+    "amenities": {
+     "roofed": false,
+     "illuminated": false
+    },
+    "externalIdentifier": [
+     {
+      "identifier": "1117415",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "stationIdBNetzA"
+      }
+     }
+    ],
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "apps"
+     },
+     {
+      "value": "rfid"
+     },
+     {
+      "value": "creditCard"
+     },
+     {
+      "value": "debitCard"
+     }
+    ],
+    "dedicatedParkingSpaces": [
+     {
+      "idG": "ab850578-3556-41c5-91b2-5c29e5a68441:parking",
+      "versionG": "1",
+      "numberOfSpaces": 2,
+      "amenities": {
+       "roofed": false,
+       "illuminated": false
+      }
+     },
+     {
+      "idG": "ab850578-3556-41c5-91b2-5c29e5a68441:parking-disabled",
+      "versionG": "1",
+      "numberOfSpaces": 0,
+      "userSpecific": [
+       {
+        "value": "personsWithDisabilities"
+       }
+      ],
+      "amenities": {
+       "roofed": false,
+       "illuminated": false
+      }
+     }
+    ],
+    "userInterfaceLanguage": [
+     "de",
+     "en"
+    ],
+    "applicableForVehicles": [
+     {
+      "comVehicleCharacteristicsExtensionG": {
+       "VehicleCharacteristicsExtended": {
+        "euVehicleCategory": [
+         {
+          "value": "m1"
+         },
+         {
+          "value": "n1"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "operator": {
+     "afacAnOrganisation": {
+      "name": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "DE*EWE"
+        }
+       ]
+      },
+      "legalName": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "EWE Go GmbH"
+        }
+       ]
+      },
+      "organisationUnit": [
+       {
+        "contactInformation": [
+         {
+          "afacContactInformation": {
+           "eMail": "info@ewe-go.de",
+           "telephoneNumber": "+49 441361520"
+          }
+         }
+        ]
+       }
+      ],
+      "externalIdentifier": [
+       {
+        "identifier": "DE*EWE",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorId"
+        }
+       },
+       {
+        "identifier": "BNA000317",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorIdBNetzA"
+        }
+       }
+      ]
+     }
+    },
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "881aa9d8-edf0-41ce-9ccd-8f6ebeb0d411",
+       "versionG": "1",
+       "lastUpdated": "2026-11-22T03:55:43.929Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "usageType": [
+        {
+         "value": "electricVehicle"
+        }
+       ],
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        500
+       ],
+       "availableChargingPower": [
+        150000
+       ],
+       "externalIdentifier": [
+        {
+         "identifier": "DE*EWE*E007189S01*02",
+         "typeOfIdentifier": {
+          "value": "extendedG",
+          "extendedValueG": "evseId"
+         }
+        }
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000
+        }
+       ],
+       "electricEnergy": [
+        {
+         "energyRateByReference": [
+          {
+           "targetClass": "aegiEnergyRate",
+           "idG": "2265e095-2970-480e-be9e-243243ef5026"
+          }
+         ],
+         "isGreenEnergy": true,
+         "energyProductName": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Strom Naturwatt pro"
+           }
+          ]
+         },
+         "carbonDioxideImpact": 0,
+         "nuclearWasteImpact": 0
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "9183e62c-fb79-401d-9e92-206d6c225389",
+       "versionG": "1",
+       "lastUpdated": "2026-11-22T14:42:47.613Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "usageType": [
+        {
+         "value": "electricVehicle"
+        }
+       ],
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        500
+       ],
+       "availableChargingPower": [
+        150000
+       ],
+       "externalIdentifier": [
+        {
+         "identifier": "DE*EWE*E007189S01*01",
+         "typeOfIdentifier": {
+          "value": "extendedG",
+          "extendedValueG": "evseId"
+         }
+        }
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000
+        }
+       ],
+       "electricEnergy": [
+        {
+         "energyRateByReference": [
+          {
+           "targetClass": "aegiEnergyRate",
+           "idG": "2265e095-2970-480e-be9e-243243ef5026"
+          }
+         ],
+         "isGreenEnergy": true,
+         "energyProductName": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Strom Naturwatt pro"
+           }
+          ]
+         },
+         "carbonDioxideImpact": 0,
+         "nuclearWasteImpact": 0
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

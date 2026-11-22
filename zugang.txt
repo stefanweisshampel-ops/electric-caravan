@@ -1,0 +1,5 @@
+P12-Text: 8148 Zeichen, bereinigt 8148, Fremdzeichen: 0; Passwort: 12 Zeichen
+P12-Datei: 6110 Bytes
+p12 ok
+zert: subject=CN=ed1bdf5f.machine1.gespann-lader.de
+zert: notAfter=Nov 20 15:04:04 2028 GMT

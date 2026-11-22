@@ -1,0 +1,333 @@
+{
+ "path": "/payload/aegiEnergyInfrastructureTablePublication/energyInfrastructureTable[]",
+ "tableKeys": {
+  "idG": "Tesla-Germany",
+  "versionG": "2026-11-22T08:00:23Z"
+ },
+ "site": {
+  "idG": "7b237cca-061e-4aeb-98fb-7197f805df35",
+  "versionG": "2026-11-16 21:26:59.23 +0000 UTC",
+  "name": {
+   "values": [
+    {
+     "lang": "de",
+     "value": "Jettingen, Germany"
+    }
+   ]
+  },
+  "lastUpdated": "2026-11-16T21:26:59Z",
+  "accessibility": [
+   {
+    "value": "barrierFreeAccessible"
+   }
+  ],
+  "additionalInformation": [
+   {
+    "values": [
+     {
+      "lang": "de",
+      "value": "10, Robert-Bosch Straße"
+     }
+    ]
+   }
+  ],
+  "operatingHours": {
+   "afacOpenAllHours": {}
+  },
+  "locationReference": {
+   "locPointLocation": {
+    "coordinatesForDisplay": {
+     "latitude": 48.411111,
+     "longitude": 10.440637
+    },
+    "locLocationExtensionG": {
+     "FacilityLocation": {
+      "address": {
+       "postcode": "89343",
+       "city": {
+        "values": [
+         {
+          "lang": "de",
+          "value": "Jettingen-Scheppach"
+         }
+        ]
+       },
+       "countryCode": "DE",
+       "addressLine": [
+        {
+         "order": 1,
+         "type": {
+          "value": "street"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Robert-Bosch Straße"
+           }
+          ]
+         }
+        },
+        {
+         "order": 2,
+         "type": {
+          "value": "houseNumber"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "10"
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   "locAreaLocation": {
+    "coordinatesForDisplay": {
+     "longitude": 10.440637,
+     "latitude": 48.411111
+    }
+   }
+  },
+  "owner": {
+   "afacAnOrganisation": {
+    "name": {
+     "values": [
+      {
+       "lang": "en",
+       "value": "Tesla, Inc."
+      }
+     ]
+    }
+   }
+  },
+  "operator": {
+   "afacAnOrganisation": {
+    "name": {
+     "values": [
+      {
+       "lang": "en",
+       "value": "Tesla, Inc."
+      }
+     ]
+    }
+   }
+  },
+  "serviceType": [
+   {
+    "serviceType": {
+     "value": "unattended"
+    }
+   }
+  ],
+  "energyInfrastructureStation": [
+   {
+    "idG": "7b237cca-061e-4aeb-98fb-7197f805df35",
+    "versionG": "2026-11-16 21:26:59.23 +0000 UTC",
+    "lastUpdated": "2026-11-16T21:26:59Z",
+    "accessibility": [
+     {
+      "value": "barrierFreeAccessible"
+     }
+    ],
+    "totalMaximumPower": 250000,
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "rfid"
+     },
+     {
+      "value": "creditCard"
+     },
+     {
+      "value": "debitCard"
+     },
+     {
+      "value": "apps"
+     },
+     {
+      "value": "website"
+     }
+    ],
+    "numberOfRefillPoints": 8,
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DE*TSL*E0P16X9",
+       "versionG": "2026-11-16 16:50:04 +0000 UTC",
+       "name": {
+        "values": [
+         {
+          "lang": "en",
+          "value": "2B"
+         }
+        ]
+       },
+       "lastUpdated": "2026-11-16T16:50:04Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "numberOfConnectors": 1,
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 250000,
+         "voltage": 470,
+         "maximumCurrent": 1000
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DE*TSL*E0P169N",
+       "versionG": "2026-11-16 16:50:04 +0000 UTC",
+       "name": {
+        "values": [
+         {
+          "lang": "en",
+          "value": "1D"
+         }
+        ]
+       },
+       "lastUpdated": "2026-11-16T16:50:04Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "numberOfConnectors": 1,
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 250000,
+         "voltage": 470,
+         "maximumCurrent": 1000
+        }
+       ]
+      }
+     }
+    ],
+    "electricEnergy": [
+     {
+      "energyRate": [
+       {
+        "idG": "3b3313c8-eb5d-4bbb-83d6-86ce30eb7ce2",
+        "ratePolicy": {
+         "value": "adHoc"
+        },
+        "lastUpdated": "2026-11-06T02:40:32Z",
+        "applicableCurrency": [
+         "EUR"
+        ],
+        "energyPrice": [
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.55
+         },
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.47,
+          "overallPeriod": {
+           "overallStartTime": "2026-11-05T23:00:00Z",
+           "validPeriod": [
+            {
+             "recurringTimePeriodOfDay": [
+              {
+               "startTimeOfPeriod": "00:00:00+01:00",
+               "endTimeOfPeriod": "04:00:00+01:00"
+              }
+             ]
+            }
+           ]
+          }
+         },
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.47,
+          "overallPeriod": {
+           "overallStartTime": "2026-11-05T23:00:00Z",
+           "validPeriod": [
+            {
+             "recurringTimePeriodOfDay": [
+              {
+               "startTimeOfPeriod": "04:00:00+01:00",
+               "endTimeOfPeriod": "08:00:00+01:00"
+              }
+             ]
+            }
+           ]
+          }
+         },
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.57,
+          "overallPeriod": {
+           "overallStartTime": "2026-11-05T23:00:00Z",
+           "validPeriod": [
+            {
+             "recurringTimePeriodOfDay": [
+              {
+               "startTimeOfPeriod": "08:00:00+01:00",
+               "endTimeOfPeriod": "23:00:00+01:00"
+              }
+             ]
+            }
+           ]
+          }
+         },
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.47,
+          "overallPeriod": {
+           "overallStartTime": "2026-11-05T23:00:00Z",
+           "validPeriod": [
+            {
+             "recurringTimePeriodOfDay": [
+              {
+               "startTimeOfPeriod": "23:00:00+01:00",
+               "endTimeOfPeriod": "00:00:00+01:00"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

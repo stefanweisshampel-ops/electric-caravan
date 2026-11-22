@@ -1,0 +1,800 @@
+{
+ "path": "/payload/aegiEnergyInfrastructureTablePublication/energyInfrastructureTable[]",
+ "tableKeys": {
+  "idG": "907574882292453376",
+  "versionG": "2"
+ },
+ "site": {
+  "idG": "800030182",
+  "versionG": "2026-11-22T00:00:00.009+01:00",
+  "additionalInformation": [
+   {
+    "values": [
+     {
+      "lang": "de",
+      "value": "EnBW-Ladestation"
+     }
+    ]
+   }
+  ],
+  "accessibility": [],
+  "operatingHours": {
+   "afacOpenAllHours": {}
+  },
+  "locationReference": {
+   "locAreaLocation": {
+    "coordinatesForDisplay": {
+     "latitude": 48.718544,
+     "longitude": 9.611829
+    }
+   },
+   "locPointLocation": {
+    "locLocationExtensionG": {
+     "FacilityLocation": {
+      "address": {
+       "postcode": "73117",
+       "city": {
+        "values": [
+         {
+          "lang": "de",
+          "value": "Wangen"
+         }
+        ]
+       },
+       "countryCode": "DE",
+       "addressLine": [
+        {
+         "order": 1,
+         "type": {
+          "value": "street"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Siemensstraße"
+           }
+          ]
+         }
+        },
+        {
+         "order": 2,
+         "type": {
+          "value": "houseNumber"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "10"
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "operator": {
+   "afacAnOrganisation": {
+    "name": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "ENBW"
+      }
+     ]
+    },
+    "externalIdentifier": [
+     {
+      "identifier": "EBW",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorId"
+      }
+     },
+     {
+      "identifier": "ENB",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorIdBNetzA"
+      }
+     }
+    ]
+   }
+  },
+  "helpdesk": {
+   "afacReferenceableOrganisation": {
+    "idG": "HELP",
+    "versionG": "2026-11-22T00:00:00.009+01:00",
+    "name": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "EnBW"
+      }
+     ]
+    },
+    "organisationUnit": [
+     {
+      "contactInformation": [
+       {
+        "afacContactInformation": {
+         "telephoneNumber": "+49 721 72 586 460"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "energyInfrastructureStation": [
+   {
+    "idG": "13529",
+    "versionG": "2026-11-22T00:00:00.009+01:00",
+    "accessibility": [],
+    "externalIdentifier": [
+     {
+      "identifier": "1121150",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorIdBNetzA"
+      }
+     }
+    ],
+    "operatingHours": {
+     "afacOpenAllHours": {}
+    },
+    "locationReference": {
+     "locPointLocation": {
+      "coordinatesForDisplay": {
+       "latitude": 48.718544,
+       "longitude": 9.611829
+      },
+      "locLocationExtensionG": {
+       "FacilityLocation": {
+        "timeZone": "Europe/Berlin",
+        "address": {
+         "postcode": "73117",
+         "city": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Wangen"
+           }
+          ]
+         },
+         "countryCode": "DE",
+         "addressLine": [
+          {
+           "order": 1,
+           "type": {
+            "value": "street"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "Siemensstraße"
+             }
+            ]
+           }
+          },
+          {
+           "order": 2,
+           "type": {
+            "value": "houseNumber"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "10"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        "nutsArea": [
+         {
+          "nutsCodeType": {
+           "value": "nuts1Code"
+          },
+          "nutsCode": "DE1"
+         }
+        ]
+       }
+      }
+     }
+    },
+    "dedicatedParkingSpaces": [
+     {
+      "idG": "PARKING-13529",
+      "versionG": "2026-11-22T00:00:00.009+01:00",
+      "accessibility": [],
+      "applicableForVehicles": [
+       {
+        "fuelType": [
+         {
+          "value": "battery"
+         }
+        ],
+        "vehicleType": [
+         {
+          "value": "car"
+         }
+        ],
+        "heightCharacteristic": [],
+        "comVehicleCharacteristicsExtensionG": {
+         "vehicleCharacteristicsExtended": {
+          "euVehicleCategory": [
+           {
+            "value": "m1"
+           },
+           {
+            "value": "l"
+           }
+          ]
+         }
+        }
+       }
+      ],
+      "numberOfSpaces": 2,
+      "amenities": {
+       "illuminated": false,
+       "roofed": false
+      }
+     }
+    ],
+    "operator": {
+     "afacAnOrganisation": {
+      "name": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "ENBW"
+        }
+       ]
+      },
+      "externalIdentifier": [
+       {
+        "identifier": "EBW",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorId"
+        }
+       },
+       {
+        "identifier": "ENB",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorIdBNetzA"
+        }
+       }
+      ]
+     }
+    },
+    "supplementalFacility": [],
+    "totalMaximumPower": 150000.0,
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "overTheAir"
+     },
+     {
+      "value": "creditCard"
+     },
+     {
+      "value": "debitCard"
+     },
+     {
+      "value": "mifareClassic"
+     },
+     {
+      "value": "mifareDesfire"
+     }
+    ],
+    "numberOfRefillPoints": 2,
+    "userInterfaceLanguage": [
+     "de",
+     "en"
+    ],
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DE*EBW*E914081*1",
+       "versionG": "2026-11-22T00:00:00.009+01:00",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        1000.0
+       ],
+       "availableChargingPower": [
+        150000.0
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000.0
+        }
+       ],
+       "electricEnergy": [
+        {
+         "isGreenEnergy": true,
+         "energyRate": [
+          {
+           "idG": "adHoc",
+           "ratePolicy": {
+            "value": "adHoc"
+           },
+           "lastUpdated": "2026-11-11T00:37:13.933+01:00",
+           "applicableCurrency": [
+            "EUR"
+           ],
+           "payment": {
+            "paymentMeans": [
+             {
+              "value": "nfc"
+             },
+             {
+              "value": "website"
+             }
+            ]
+           },
+           "energyPrice": [
+            {
+             "priceType": {
+              "value": "pricePerKWh"
+             },
+             "value": 0.66386555,
+             "taxIncluded": false,
+             "taxRate": 19.0
+            },
+            {
+             "priceType": {
+              "value": "pricePerMinute"
+             },
+             "value": 0.20168067233333334,
+             "taxIncluded": false,
+             "taxRate": 19.0,
+             "timeBasedApplicability": {
+              "fromMinute": 30,
+              "toMinute": 0
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DE*EBW*E914081*2",
+       "versionG": "2026-11-22T00:00:00.009+01:00",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        1000.0
+       ],
+       "availableChargingPower": [
+        150000.0
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000.0
+        }
+       ],
+       "electricEnergy": [
+        {
+         "isGreenEnergy": true,
+         "energyRate": [
+          {
+           "idG": "adHoc",
+           "ratePolicy": {
+            "value": "adHoc"
+           },
+           "lastUpdated": "2026-11-11T00:37:13.996+01:00",
+           "applicableCurrency": [
+            "EUR"
+           ],
+           "payment": {
+            "paymentMeans": [
+             {
+              "value": "nfc"
+             },
+             {
+              "value": "website"
+             }
+            ]
+           },
+           "energyPrice": [
+            {
+             "priceType": {
+              "value": "pricePerKWh"
+             },
+             "value": 0.66386555,
+             "taxIncluded": false,
+             "taxRate": 19.0
+            },
+            {
+             "priceType": {
+              "value": "pricePerMinute"
+             },
+             "value": 0.20168067233333334,
+             "taxIncluded": false,
+             "taxRate": 19.0,
+             "timeBasedApplicability": {
+              "fromMinute": 30,
+              "toMinute": 0
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "idG": "13538",
+    "versionG": "2026-11-22T00:00:00.009+01:00",
+    "accessibility": [],
+    "externalIdentifier": [
+     {
+      "identifier": "1121151",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorIdBNetzA"
+      }
+     }
+    ],
+    "operatingHours": {
+     "afacOpenAllHours": {}
+    },
+    "locationReference": {
+     "locPointLocation": {
+      "coordinatesForDisplay": {
+       "latitude": 48.718544,
+       "longitude": 9.611829
+      },
+      "locLocationExtensionG": {
+       "FacilityLocation": {
+        "timeZone": "Europe/Berlin",
+        "address": {
+         "postcode": "73117",
+         "city": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Wangen"
+           }
+          ]
+         },
+         "countryCode": "DE",
+         "addressLine": [
+          {
+           "order": 1,
+           "type": {
+            "value": "street"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "Siemensstraße"
+             }
+            ]
+           }
+          },
+          {
+           "order": 2,
+           "type": {
+            "value": "houseNumber"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "10"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        "nutsArea": [
+         {
+          "nutsCodeType": {
+           "value": "nuts1Code"
+          },
+          "nutsCode": "DE1"
+         }
+        ]
+       }
+      }
+     }
+    },
+    "dedicatedParkingSpaces": [
+     {
+      "idG": "PARKING-13538",
+      "versionG": "2026-11-22T00:00:00.009+01:00",
+      "accessibility": [],
+      "applicableForVehicles": [
+       {
+        "fuelType": [
+         {
+          "value": "battery"
+         }
+        ],
+        "vehicleType": [
+         {
+          "value": "car"
+         }
+        ],
+        "heightCharacteristic": [],
+        "comVehicleCharacteristicsExtensionG": {
+         "vehicleCharacteristicsExtended": {
+          "euVehicleCategory": [
+           {
+            "value": "m1"
+           },
+           {
+            "value": "l"
+           }
+          ]
+         }
+        }
+       }
+      ],
+      "numberOfSpaces": 2,
+      "amenities": {
+       "illuminated": false,
+       "roofed": false
+      }
+     }
+    ],
+    "operator": {
+     "afacAnOrganisation": {
+      "name": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "ENBW"
+        }
+       ]
+      },
+      "externalIdentifier": [
+       {
+        "identifier": "EBW",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorId"
+        }
+       },
+       {
+        "identifier": "ENB",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorIdBNetzA"
+        }
+       }
+      ]
+     }
+    },
+    "supplementalFacility": [],
+    "totalMaximumPower": 150000.0,
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "overTheAir"
+     },
+     {
+      "value": "creditCard"
+     },
+     {
+      "value": "debitCard"
+     },
+     {
+      "value": "mifareClassic"
+     },
+     {
+      "value": "mifareDesfire"
+     }
+    ],
+    "numberOfRefillPoints": 2,
+    "userInterfaceLanguage": [
+     "de",
+     "en"
+    ],
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DE*EBW*E914082*2",
+       "versionG": "2026-11-22T00:00:00.009+01:00",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        1000.0
+       ],
+       "availableChargingPower": [
+        150000.0
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000.0
+        }
+       ],
+       "electricEnergy": [
+        {
+         "isGreenEnergy": true,
+         "energyRate": [
+          {
+           "idG": "adHoc",
+           "ratePolicy": {
+            "value": "adHoc"
+           },
+           "lastUpdated": "2026-11-11T00:37:44.051+01:00",
+           "applicableCurrency": [
+            "EUR"
+           ],
+           "payment": {
+            "paymentMeans": [
+             {
+              "value": "nfc"
+             },
+             {
+              "value": "website"
+             }
+            ]
+           },
+           "energyPrice": [
+            {
+             "priceType": {
+              "value": "pricePerKWh"
+             },
+             "value": 0.66386555,
+             "taxIncluded": false,
+             "taxRate": 19.0
+            },
+            {
+             "priceType": {
+              "value": "pricePerMinute"
+             },
+             "value": 0.20168067233333334,
+             "taxIncluded": false,
+             "taxRate": 19.0,
+             "timeBasedApplicability": {
+              "fromMinute": 30,
+              "toMinute": 0
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DE*EBW*E914082*1",
+       "versionG": "2026-11-22T00:00:00.009+01:00",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "currentType": {
+        "value": "dc"
+       },
+       "numberOfConnectors": 1,
+       "availableVoltage": [
+        1000.0
+       ],
+       "availableChargingPower": [
+        150000.0
+       ],
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2COMBO"
+         },
+         "maxPowerAtSocket": 150000.0
+        }
+       ],
+       "electricEnergy": [
+        {
+         "isGreenEnergy": true,
+         "energyRate": [
+          {
+           "idG": "adHoc",
+           "ratePolicy": {
+            "value": "adHoc"
+           },
+           "lastUpdated": "2026-11-11T00:37:43.907+01:00",
+           "applicableCurrency": [
+            "EUR"
+           ],
+           "payment": {
+            "paymentMeans": [
+             {
+              "value": "nfc"
+             },
+             {
+              "value": "website"
+             }
+            ]
+           },
+           "energyPrice": [
+            {
+             "priceType": {
+              "value": "pricePerKWh"
+             },
+             "value": 0.66386555,
+             "taxIncluded": false,
+             "taxRate": 19.0
+            },
+            {
+             "priceType": {
+              "value": "pricePerMinute"
+             },
+             "value": 0.20168067233333334,
+             "taxIncluded": false,
+             "taxRate": 19.0,
+             "timeBasedApplicability": {
+              "fromMinute": 30,
+              "toMinute": 0
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

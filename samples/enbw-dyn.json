@@ -1,0 +1,54 @@
+{
+ "path": "/messageContainer/payload[]/aegiEnergyInfrastructureStatusPublication",
+ "tableKeys": {
+  "lang": "de",
+  "publicationTime": "2026-11-22T01:00:53.076+01:00",
+  "publicationCreator": "dict",
+  "tableReference": "list"
+ },
+ "site": {
+  "reference": {
+   "targetClass": "FacilityObject",
+   "versionG": "2026-11-21T22:13:51.793+01:00",
+   "idG": "800000002"
+  },
+  "lastUpdated": "2026-11-22T01:00:00.019+01:00",
+  "energyInfrastructureStationStatus": [
+   {
+    "reference": {
+     "targetClass": "FacilityObject",
+     "versionG": "2026-11-21T22:13:51.793+01:00",
+     "idG": "13519"
+    },
+    "refillPointStatus": [
+     {
+      "aegiRefillPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "versionG": "2026-11-21T22:13:51.793+01:00",
+        "idG": "DE*EBW*E904644*1"
+       },
+       "lastUpdated": "2026-11-21T22:13:51.793+01:00",
+       "status": {
+        "value": "available"
+       }
+      }
+     },
+     {
+      "aegiRefillPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "versionG": "2026-11-21T19:11:33.088+01:00",
+        "idG": "DE*EBW*E904644*2"
+       },
+       "lastUpdated": "2026-11-21T19:11:33.088+01:00",
+       "status": {
+        "value": "available"
+       }
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,330 @@
+{
+ "path": "/payload/aegiEnergyInfrastructureTablePublication/energyInfrastructureTable[]",
+ "tableKeys": {
+  "idG": "DE-SLG-001",
+  "versionG": "0.0.1",
+  "tableName": "Stadtwerke Lüdenscheid GmbH Energy Infrastructure Table"
+ },
+ "site": {
+  "idG": "DESLGDESLGE001502",
+  "versionG": "0.0.1",
+  "name": {
+   "values": [
+    {
+     "lang": "de",
+     "value": "Herscheid - Ladesäule  Rathaus Plettenberger Straße"
+    }
+   ]
+  },
+  "lastUpdated": "2026-11-21T22:03:09Z",
+  "accessibility": [
+   {
+    "value": "unknown"
+   }
+  ],
+  "photoUrl": [],
+  "operatingHours": {
+   "afacOpenAllHours": {}
+  },
+  "locationReference": {
+   "locAreaLocation": {
+    "coordinatesForDisplay": {
+     "latitude": 51.178309,
+     "longitude": 7.749287
+    },
+    "locLocationExtensionG": {
+     "FacilityLocation": {
+      "timeZone": "+01:00",
+      "address": {
+       "postcode": "58849",
+       "city": {
+        "values": [
+         {
+          "lang": "de",
+          "value": "Herscheid"
+         }
+        ]
+       },
+       "countryCode": "DE",
+       "addressLine": [
+        {
+         "order": 0,
+         "type": {
+          "value": "street"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Plettenberger Straße 27"
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "operator": {
+   "afacAnOrganisation": {
+    "name": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "Ladenetz"
+      }
+     ]
+    },
+    "lastUpdated": "2026-11-21T22:03:09Z",
+    "legalName": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "Ladenetz"
+      }
+     ]
+    },
+    "externalIdentifier": [
+     {
+      "identifier": "DESLG",
+      "typeOfIdentifier": {
+       "value": "extendedG",
+       "extendedValueG": "operatorId"
+      }
+     }
+    ]
+   }
+  },
+  "owner": {
+   "afacAnOrganisation": {
+    "name": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "Stadtwerke Lüdenscheid GmbH"
+      }
+     ]
+    },
+    "lastUpdated": "2026-11-21T22:03:09Z",
+    "legalName": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "Stadtwerke Lüdenscheid GmbH"
+      }
+     ]
+    }
+   }
+  },
+  "energyInfrastructureStation": [
+   {
+    "idG": "DESLGE001502",
+    "versionG": "0.0.1",
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DESLGE001502",
+       "versionG": "0.0.1",
+       "externalIdentifier": [
+        {
+         "identifier": "DESLGE001502",
+         "typeOfIdentifier": {
+          "value": "extendedG",
+          "extendedValueG": "evseId"
+         }
+        }
+       ],
+       "lastUpdated": "2026-11-21T22:03:09Z",
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "reservation": {
+        "value": "unknown"
+       },
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2"
+         },
+         "connectorFormat": {
+          "value": "socket"
+         },
+         "voltage": 230,
+         "maximumCurrent": 32,
+         "maxPowerAtSocket": 22080
+        }
+       ],
+       "numberOfConnectors": 1,
+       "chargingMode": {
+        "value": "mode3AC3p"
+       },
+       "currentType": {
+        "value": "ac"
+       },
+       "availableVoltage": [
+        230
+       ],
+       "electricEnergy": [
+        {
+         "energyRateByReference": [
+          {
+           "targetClass": "EnergyRate",
+           "idG": "Stadtwerke Luedenscheid AdHoc AC"
+          }
+         ]
+        }
+       ],
+       "availableChargingPower": [
+        22080
+       ],
+       "photoUrl": [],
+       "locationReference": {
+        "locAreaLocation": {
+         "coordinatesForDisplay": {
+          "latitude": 51.178309,
+          "longitude": 7.749287
+         }
+        }
+       }
+      }
+     }
+    ],
+    "electricEnergy": [
+     {
+      "energyRate": [
+       {
+        "idG": "Stadtwerke Luedenscheid AdHoc AC",
+        "ratePolicy": {
+         "value": "adHoc"
+        },
+        "lastUpdated": "2026-10-14T14:00:20Z",
+        "applicableCurrency": [
+         "EUR"
+        ],
+        "energyPrice": [
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.378,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         },
+         {
+          "priceType": {
+           "value": "pricePerMinute"
+          },
+          "value": 0.0,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         },
+         {
+          "priceType": {
+           "value": "flatRate"
+          },
+          "value": 0.832,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         },
+         {
+          "priceType": {
+           "value": "other"
+          },
+          "value": 0.0,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         }
+        ]
+       },
+       {
+        "idG": "Stadtwerke Luedenscheid AdHoc DC",
+        "ratePolicy": {
+         "value": "adHoc"
+        },
+        "lastUpdated": "2026-10-14T14:00:36Z",
+        "applicableCurrency": [
+         "EUR"
+        ],
+        "energyPrice": [
+         {
+          "priceType": {
+           "value": "pricePerKWh"
+          },
+          "value": 0.513,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         },
+         {
+          "priceType": {
+           "value": "pricePerMinute"
+          },
+          "value": 0.0,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         },
+         {
+          "priceType": {
+           "value": "flatRate"
+          },
+          "value": 0.832,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         },
+         {
+          "priceType": {
+           "value": "other"
+          },
+          "value": 0.0,
+          "taxIncluded": false,
+          "overallPeriod": {
+           "overallStartTime": "2026-10-13T22:00:00Z"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "totalMaximumPower": 22080.0,
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "apps"
+     },
+     {
+      "value": "mifareClassic"
+     },
+     {
+      "value": "mifareDesfire"
+     },
+     {
+      "value": "website"
+     }
+    ],
+    "numberOfRefillPoints": 1
+   }
+  ]
+ }
+}

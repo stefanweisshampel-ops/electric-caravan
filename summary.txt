@@ -1,0 +1,12 @@
+== chargecloud-dyn: HTTP 200, 9552986 Bytes, Standorte 0, Fahrzeugeignung 0, Abmessungen 0
+== eclearing-dyn: HTTP 200, 29129302 Bytes, Standorte 0, Fahrzeugeignung 0, Abmessungen 0
+== eclearing-stat: HTTP 200, 54244667 Bytes, Standorte 13866, Fahrzeugeignung 0, Abmessungen 0
+== enbw-dyn: HTTP 200, 3708302 Bytes, Standorte 0, Fahrzeugeignung 0, Abmessungen 0
+== enbw-stat: HTTP 200, 25011464 Bytes, Standorte 2451, Fahrzeugeignung 5412, Abmessungen 0
+   vehicleType: [('car', 5412)]
+== ewe-dyn: HTTP 200, 2828751 Bytes, Standorte 0, Fahrzeugeignung 0, Abmessungen 0
+== ewe-stat: HTTP 200, 7688660 Bytes, Standorte 1126, Fahrzeugeignung 1521, Abmessungen 0
+== tesla-dyn: HTTP 200, 2488203 Bytes, Standorte 0, Fahrzeugeignung 0, Abmessungen 0
+== tesla-stat: HTTP 200, 2381195 Bytes, Standorte 333, Fahrzeugeignung 0, Abmessungen 0
+== vw-dyn: HTTP 200, 1894 Bytes, Standorte 0, Fahrzeugeignung 0, Abmessungen 0
+== vw-stat: HTTP 200, 15597074 Bytes, Standorte 4658, Fahrzeugeignung 0, Abmessungen 0

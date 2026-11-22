@@ -1,0 +1,53 @@
+{
+ "path": "/messageContainer/payload[]/aegiEnergyInfrastructureStatusPublication",
+ "tableKeys": {
+  "lang": "de",
+  "publicationTime": "2026-11-22T17:07:04.173Z",
+  "tableReference": "list",
+  "publicationCreator": "dict",
+  "headerInformation": "dict"
+ },
+ "site": {
+  "reference": {
+   "targetClass": "FacilityObject",
+   "idG": "59abd36d-1423-4ca8-8f4d-ea645791f6a7",
+   "versionG": "2026-11-22T17:07:04.173Z"
+  },
+  "energyInfrastructureStationStatus": [
+   {
+    "reference": {
+     "targetClass": "FacilityObject",
+     "idG": "bcc64e55-5156-4bee-b919-abb26678fd44",
+     "versionG": "2026-11-22T17:07:04.173Z"
+    },
+    "lastUpdated": "2026-11-22T17:07:04.173Z",
+    "refillPointStatus": [
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "idG": "DE*GOE*E00005*001",
+        "versionG": "2026-11-22T17:07:04.173Z"
+       },
+       "status": {
+        "value": "outOfOrder"
+       }
+      }
+     },
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "idG": "DE*GOE*E00005*002",
+        "versionG": "2026-11-22T17:07:04.173Z"
+       },
+       "status": {
+        "value": "charging"
+       }
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

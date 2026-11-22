@@ -1,0 +1,311 @@
+{
+ "path": "/messageContainer/payload[]/aegiEnergyInfrastructureStatusPublication",
+ "tableKeys": {
+  "lang": "de",
+  "publicationTime": "2026-11-22T17:03:59.110Z",
+  "tableReference": "list",
+  "publicationCreator": "dict",
+  "headerInformation": "dict"
+ },
+ "site": {
+  "reference": {
+   "targetClass": "FacilityObject",
+   "idG": "f8e6bea4-a375-4970-8305-74db4cec9ac8",
+   "versionG": "1"
+  },
+  "energyInfrastructureStationStatus": [
+   {
+    "reference": {
+     "targetClass": "FacilityObject",
+     "idG": "63853520-3bf6-447e-98dd-3dc3737be5e6",
+     "versionG": "1"
+    },
+    "lastUpdated": "2026-11-22T10:22:10.196Z",
+    "refillPointStatus": [
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "idG": "45c64395-22bf-4c2e-9bb9-ecb418e3f27f",
+        "versionG": "1"
+       },
+       "lastUpdated": "2026-11-22T03:55:42.027Z",
+       "status": {
+        "value": "available"
+       },
+       "energyRateUpdate": [
+        {
+         "lastUpdated": "2026-08-27T14:59:03.005Z",
+         "energyRateReference": {
+          "targetClass": "EnergyRate",
+          "idG": "2265e095-2970-480e-be9e-243243ef5026"
+         },
+         "energyPrice": [
+          {
+           "priceType": {
+            "value": "pricePerKWh"
+           },
+           "value": 0.85,
+           "taxIncluded": true,
+           "taxRate": 19,
+           "overallPeriod": {
+            "overallStartTime": "2026-08-12T09:25:02.612Z",
+            "validPeriod": [
+             {
+              "recurringDayWeekMonthPeriod": [
+               {
+                "comDayWeekMonth": {
+                 "applicableDay": [
+                  {
+                   "value": "monday"
+                  },
+                  {
+                   "value": "tuesday"
+                  },
+                  {
+                   "value": "wednesday"
+                  },
+                  {
+                   "value": "thursday"
+                  },
+                  {
+                   "value": "friday"
+                  },
+                  {
+                   "value": "saturday"
+                  },
+                  {
+                   "value": "sunday"
+                  }
+                 ]
+                }
+               }
+              ]
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "idG": "387ac3cf-1a45-4f62-933a-47680e59539d",
+        "versionG": "1"
+       },
+       "lastUpdated": "2026-11-22T10:22:10.196Z",
+       "status": {
+        "value": "available"
+       },
+       "energyRateUpdate": [
+        {
+         "lastUpdated": "2026-08-27T14:59:03.005Z",
+         "energyRateReference": {
+          "targetClass": "EnergyRate",
+          "idG": "2265e095-2970-480e-be9e-243243ef5026"
+         },
+         "energyPrice": [
+          {
+           "priceType": {
+            "value": "pricePerKWh"
+           },
+           "value": 0.85,
+           "taxIncluded": true,
+           "taxRate": 19,
+           "overallPeriod": {
+            "overallStartTime": "2026-08-12T09:25:02.612Z",
+            "validPeriod": [
+             {
+              "recurringDayWeekMonthPeriod": [
+               {
+                "comDayWeekMonth": {
+                 "applicableDay": [
+                  {
+                   "value": "monday"
+                  },
+                  {
+                   "value": "tuesday"
+                  },
+                  {
+                   "value": "wednesday"
+                  },
+                  {
+                   "value": "thursday"
+                  },
+                  {
+                   "value": "friday"
+                  },
+                  {
+                   "value": "saturday"
+                  },
+                  {
+                   "value": "sunday"
+                  }
+                 ]
+                }
+               }
+              ]
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "reference": {
+     "targetClass": "FacilityObject",
+     "idG": "ab850578-3556-41c5-91b2-5c29e5a68441",
+     "versionG": "1"
+    },
+    "lastUpdated": "2026-11-22T15:30:57.961Z",
+    "refillPointStatus": [
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "idG": "9183e62c-fb79-401d-9e92-206d6c225389",
+        "versionG": "1"
+       },
+       "lastUpdated": "2026-11-22T15:30:57.756Z",
+       "status": {
+        "value": "available"
+       },
+       "energyRateUpdate": [
+        {
+         "lastUpdated": "2026-08-27T14:59:03.005Z",
+         "energyRateReference": {
+          "targetClass": "EnergyRate",
+          "idG": "2265e095-2970-480e-be9e-243243ef5026"
+         },
+         "energyPrice": [
+          {
+           "priceType": {
+            "value": "pricePerKWh"
+           },
+           "value": 0.85,
+           "taxIncluded": true,
+           "taxRate": 19,
+           "overallPeriod": {
+            "overallStartTime": "2026-08-12T09:25:02.612Z",
+            "validPeriod": [
+             {
+              "recurringDayWeekMonthPeriod": [
+               {
+                "comDayWeekMonth": {
+                 "applicableDay": [
+                  {
+                   "value": "monday"
+                  },
+                  {
+                   "value": "tuesday"
+                  },
+                  {
+                   "value": "wednesday"
+                  },
+                  {
+                   "value": "thursday"
+                  },
+                  {
+                   "value": "friday"
+                  },
+                  {
+                   "value": "saturday"
+                  },
+                  {
+                   "value": "sunday"
+                  }
+                 ]
+                }
+               }
+              ]
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "aegiElectricChargingPointStatus": {
+       "reference": {
+        "targetClass": "FacilityObject",
+        "idG": "881aa9d8-edf0-41ce-9ccd-8f6ebeb0d411",
+        "versionG": "1"
+       },
+       "lastUpdated": "2026-11-22T03:55:43.929Z",
+       "status": {
+        "value": "available"
+       },
+       "energyRateUpdate": [
+        {
+         "lastUpdated": "2026-08-27T14:59:03.005Z",
+         "energyRateReference": {
+          "targetClass": "EnergyRate",
+          "idG": "2265e095-2970-480e-be9e-243243ef5026"
+         },
+         "energyPrice": [
+          {
+           "priceType": {
+            "value": "pricePerKWh"
+           },
+           "value": 0.85,
+           "taxIncluded": true,
+           "taxRate": 19,
+           "overallPeriod": {
+            "overallStartTime": "2026-08-12T09:25:02.612Z",
+            "validPeriod": [
+             {
+              "recurringDayWeekMonthPeriod": [
+               {
+                "comDayWeekMonth": {
+                 "applicableDay": [
+                  {
+                   "value": "monday"
+                  },
+                  {
+                   "value": "tuesday"
+                  },
+                  {
+                   "value": "wednesday"
+                  },
+                  {
+                   "value": "thursday"
+                  },
+                  {
+                   "value": "friday"
+                  },
+                  {
+                   "value": "saturday"
+                  },
+                  {
+                   "value": "sunday"
+                  }
+                 ]
+                }
+               }
+              ]
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

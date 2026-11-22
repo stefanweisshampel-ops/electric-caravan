@@ -1,0 +1,272 @@
+{
+ "path": "/payload/aegiEnergyInfrastructureTablePublication/energyInfrastructureTable[]",
+ "tableKeys": {
+  "idG": "500df9e0-67ad-5bfd-84df-f7c0a234b1a7",
+  "versionG": "2023-07-05T06:47:44.310Z",
+  "tableName": "ESS Stations"
+ },
+ "site": {
+  "idG": "8383bd7f-93da-5bc3-a362-b86906b036b2",
+  "versionG": "2023-07-05T06:47:44.310Z",
+  "lastUpdated": "2023-07-05T06:47:44.310Z",
+  "name": {
+   "values": [
+    {
+     "lang": "de",
+     "value": "Geldern"
+    }
+   ]
+  },
+  "typeOfSite": {
+   "value": "openSpace"
+  },
+  "locationReference": {
+   "locPointLocation": {
+    "coordinatesForDisplay": {
+     "latitude": 51.522043,
+     "longitude": 6.346488
+    },
+    "pointByCoordinates": {
+     "pointCoordinates": {
+      "latitude": 51.522043,
+      "longitude": 6.346488
+     }
+    },
+    "supplementaryPositionalDescription": {
+     "locationDescription": {
+      "values": [
+       {
+        "lang": "de",
+        "value": "Die Ladesäule befindet sich am Haupteingang."
+       }
+      ]
+     }
+    },
+    "locLocationExtensionG": {
+     "facilityLocation": {
+      "address": {
+       "postcode": "47608",
+       "city": {
+        "values": [
+         {
+          "lang": "de",
+          "value": "Geldern"
+         }
+        ]
+       },
+       "countryCode": "DE",
+       "addressLine": [
+        {
+         "order": 0,
+         "type": {
+          "value": "street"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Weseler Str."
+           }
+          ]
+         }
+        },
+        {
+         "order": 1,
+         "type": {
+          "value": "houseNumber"
+         },
+         "text": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "150"
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "energyInfrastructureStation": [
+   {
+    "idG": "e58ab090-a333-5006-ad14-5b3aa3103897",
+    "versionG": "2023-07-05T06:47:44.310Z",
+    "lastUpdated": "2023-07-05T06:47:44.310Z",
+    "name": {
+     "values": [
+      {
+       "lang": "de",
+       "value": "Geldern 22 KW"
+      }
+     ]
+    },
+    "totalMaximumPower": 0,
+    "numberOfRefillPoints": 1,
+    "serviceType": [
+     {
+      "serviceType": {
+       "value": "unattended"
+      }
+     }
+    ],
+    "authenticationAndIdentificationMethods": [
+     {
+      "value": "rfid"
+     }
+    ],
+    "userInterfaceLanguage": [
+     "de"
+    ],
+    "locationReference": {
+     "locPointLocation": {
+      "coordinatesForDisplay": {
+       "latitude": 51.522043,
+       "longitude": 6.346488
+      },
+      "pointByCoordinates": {
+       "pointCoordinates": {
+        "latitude": 51.522043,
+        "longitude": 6.346488
+       }
+      },
+      "supplementaryPositionalDescription": {
+       "locationDescription": {
+        "values": [
+         {
+          "lang": "de",
+          "value": "Die Ladesäule befindet sich am Haupteingang."
+         }
+        ]
+       }
+      },
+      "locLocationExtensionG": {
+       "facilityLocation": {
+        "address": {
+         "postcode": "47608",
+         "city": {
+          "values": [
+           {
+            "lang": "de",
+            "value": "Geldern"
+           }
+          ]
+         },
+         "countryCode": "DE",
+         "addressLine": [
+          {
+           "order": 0,
+           "type": {
+            "value": "street"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "Weseler Str."
+             }
+            ]
+           }
+          },
+          {
+           "order": 1,
+           "type": {
+            "value": "houseNumber"
+           },
+           "text": {
+            "values": [
+             {
+              "lang": "de",
+              "value": "150"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    },
+    "operator": {
+     "afacAnOrganisation": {
+      "name": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "Geldern 22 KW"
+        }
+       ]
+      },
+      "legalName": {
+       "values": [
+        {
+         "lang": "de",
+         "value": "Geldern 22 KW"
+        }
+       ]
+      },
+      "externalIdentifier": [
+       {
+        "identifier": "GCE",
+        "typeOfIdentifier": {
+         "value": "extendedG",
+         "extendedValueG": "operatorId"
+        }
+       }
+      ]
+     }
+    },
+    "refillPoint": [
+     {
+      "aegiElectricChargingPoint": {
+       "idG": "DEGCEEACEG2G6ECU51",
+       "versionG": "2023-07-05T06:47:44.310Z",
+       "lastUpdated": "2023-07-05T06:47:44.310Z",
+       "currentType": {
+        "value": "ac"
+       },
+       "deliveryUnit": {
+        "value": "kWh"
+       },
+       "numberOfConnectors": 1,
+       "connector": [
+        {
+         "connectorType": {
+          "value": "iec62196T2"
+         },
+         "connectorFormat": {
+          "value": "otherCable"
+         },
+         "maxPowerAtSocket": 0
+        }
+       ],
+       "chargingMode": {
+        "value": "mode3AC3p"
+       },
+       "usageType": [
+        {
+         "value": "electricVehicle"
+        }
+       ],
+       "availableChargingPower": [
+        0
+       ],
+       "externalIdentifier": [
+        {
+         "identifier": "DEGCEEACEG2G6ECU51",
+         "typeOfIdentifier": {
+          "value": "extendedG",
+          "extendedValueG": "evseId"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ }
+}
