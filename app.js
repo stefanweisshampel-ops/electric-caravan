@@ -208,16 +208,30 @@
     loginSent = { email };
     rerenderLogin();
   }
+  // Alternativ zum Link: Code aus der Mail eintippen (hilft, wenn Werbeblocker die Link-Weiterleitung des Mailversands sperren
+  // oder die Mail auf einem anderen Gerät gelesen wird)
+  async function verifyLogin(code) {
+    code = (code || '').replace(/\D/g, '');
+    if (!loginSent) return;
+    if (!/^\d{6,10}$/.test(code)) { toast('Bitte den Code aus der E-Mail eingeben (nur Ziffern).'); return; }
+    if (loginBusy) return;
+    loginBusy = true;
+    const { error } = await sb.auth.verifyOtp({ email: loginSent.email, token: code, type: 'email' });
+    loginBusy = false;
+    if (error) { toast('Der Code passt nicht oder ist abgelaufen. Fordere bei Bedarf eine neue Mail an.', 6000); return; }
+    toast('Angemeldet');
+  }
   function loginHtml(p, intro) {
     if (loginSent) {
-      return '<div class="sent"><b>Link verschickt an ' + esc(loginSent.email) + '.</b><br>' +
-        'Öffne die E-Mail und tippe auf den Link – am besten auf diesem Gerät. ' +
-        'Nichts angekommen? Schau bitte auch im <b>Spam- oder Werbung-Ordner</b> nach, die Mail kann ein paar Minuten brauchen. ' +
+      return '<div class="sent"><b>Mail verschickt an ' + esc(loginSent.email) + '.</b><br>' +
+        'Tippe auf den Link in der Mail – oder gib hier den Code aus der Mail ein:' +
+        '<div class="login"><input id="' + p + 'code" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="Code aus der Mail"><button class="btn" id="' + p + 'verify">Anmelden</button></div>' +
+        '<div style="margin-top:8px">Nichts angekommen? Schau bitte auch im <b>Spam- oder Werbung-Ordner</b> nach, die Mail kann ein paar Minuten brauchen. ' +
         'Falls sie dort liegt, markiere sie als „kein Spam“, dann kommen die nächsten Links sicher an.' +
-        '<div class="act"><button class="btn ghost" id="' + p + 'resend">Erneut senden</button><button class="btn link" id="' + p + 'other">Andere Adresse</button></div></div>';
+        '</div><div class="act"><button class="btn ghost" id="' + p + 'resend">Erneut senden</button><button class="btn link" id="' + p + 'other">Andere Adresse</button></div></div>';
     }
     return (intro ? '<div class="note" style="margin-top:0">' + intro + '</div>' : '') +
-      '<div class="login"><input id="' + p + 'email" type="email" autocomplete="email" placeholder="E-Mail-Adresse"><button class="btn" id="' + p + 'send">Link senden</button></div>' +
+      '<div class="login"><input id="' + p + 'email" type="email" autocomplete="email" placeholder="E-Mail-Adresse"><button class="btn" id="' + p + 'send">Anmelde-Mail senden</button></div>' +
       '<div class="note">Die Anmelde-Mail landet manchmal im Spam-Ordner – schau dort nach, falls sie nicht im Posteingang ist.</div>';
   }
   function bindLogin(p) {
@@ -225,6 +239,8 @@
     const on = (id, fn) => { if (el(id)) el(id).addEventListener('click', fn); };
     on('send', () => sendLogin(el('email').value));
     on('resend', () => sendLogin(loginSent && loginSent.email));
+    on('verify', () => verifyLogin(el('code').value));
+    if (el('code')) el('code').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); verifyLogin(el('code').value); } });
     on('other', () => { loginSent = null; rerenderLogin(); });
     if (el('email')) el('email').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendLogin(el('email').value); } });
   }
@@ -606,7 +622,7 @@
   }
   function rateFormHtml(s) {
     if (backend === 'supabase' && !user) {
-      return loginHtml('l', 'Zum Bewerten kurz anmelden – ohne Passwort, du bekommst einen Link per E-Mail.');
+      return loginHtml('l', 'Zum Bewerten kurz anmelden – ohne Passwort, du bekommst einen Link und einen Code per E-Mail.');
     }
     const dis = saving ? ' disabled' : '';
     const m = s.mine;
@@ -691,7 +707,7 @@
       return;
     }
     if (!user) {
-      el.innerHTML = '<b>Nicht angemeldet.</b> Zum Bewerten mit E-Mail anmelden – ohne Passwort, du bekommst einen Link.' + loginHtml('a', '');
+      el.innerHTML = '<b>Nicht angemeldet.</b> Zum Bewerten mit E-Mail anmelden – ohne Passwort, du bekommst einen Link und einen Code.' + loginHtml('a', '');
       bindLogin('a');
       return;
     }
