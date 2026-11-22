@@ -56,22 +56,33 @@ def fmt_km(v):
 def load_sites():
     d = json.load(open(os.path.join(ROOT, 'data/DE/sites.json'), encoding='utf-8'))
     prices, op_price = d['prices'], d['opPrice']
+    try:  # Ad-hoc-Preise direkt von den Betreibern (AFIR über die Mobilithek), falls vorhanden
+        afir = json.load(open(os.path.join(ROOT, 'data/DE/afir.json'), encoding='utf-8')).get('s', {})
+    except (OSError, ValueError):
+        afir = {}
     sites = []
     for r in d['sites']:
         fl = r[8]
         pi = op_price[r[2]]
         p = prices[pi] if pi >= 0 else None
         best = None
-        if p:
-            c = [x[0] for x in (p.get('adhoc'), p.get('app')) if x]
-            best = min(c) if c else None
+        key = 'DE-%.4f_%.4f' % (r[0], r[1])
+        a = afir.get(key)
+        c = []
+        if a and a[0] is not None:
+            c.append(a[0])
+        elif p and p.get('adhoc'):
+            c.append(p['adhoc'][0])
+        if p and p.get('app'):
+            c.append(p['app'][0])
+        best = min(c) if c else None
         parts = r[4].split(', ')
         city = re.sub(r'^\d{4,5}\s*', '', parts[-1] if parts else '')
         sites.append({
             'lat': r[0], 'lon': r[1], 'op': d['ops'][r[2]], 'name': r[3], 'addr': r[4], 'kw': r[6], 'n': r[7],
             'truck': bool(fl & 32), 'rest': bool(fl & 64), 'term': bool(fl & 8), 'mw': r[11],
             'A': {a: pos for a, pos in (r[12] or [])}, 'best': best, 'city': city,
-            'key': 'DE-%.4f_%.4f' % (r[0], r[1]), 'st': None,
+            'key': key, 'st': None, 'optrailer': bool(a and a[5]),
         })
     return d, sites
 
@@ -195,7 +206,8 @@ def build():
             st = status_of(s)
             n = sum(s['st'].values()) if s['st'] else 0
             badge = (f'<span class="b {st}">{STATUS[st]}</span>' + (f'<small>{n} Bewertungen</small>' if n > 1 else '')) if st \
-                else '<span class="b open">noch nicht bewertet</span>'
+                else ('<span class="b ja">Durchfahrt laut Betreiber</span>' if s.get('optrailer')
+                      else '<span class="b open">noch nicht bewertet</span>')
             name = s['name'] or s['op']
             sub = (E(s['op']) + ' · ' if s['name'] else '') + E(s['city'])
             extra = []
@@ -238,7 +250,7 @@ def build():
 <tbody>
 {chr(10).join(rows)}
 </tbody></table></div>
-<p class="hint">Stationsdaten Stand {E(stand)}, Preise recherchiert am {E(pstand)}. Die Bewertungen werden täglich aktualisiert, ganz aktuell sind sie auf der Karte.</p>'''
+<p class="hint">Stationsdaten Stand {E(stand)}, Preise recherchiert am {E(pstand)}, Ad-hoc-Preise von EnBW, Tesla, EWE Go und Stadtwerken laut AFIR-Daten der Betreiber (Mobilithek). Die Bewertungen werden täglich aktualisiert, ganz aktuell sind sie auf der Karte.</p>'''
         title = f'{a}: Schnelllader mit Durchfahrt für Wohnwagen und Anhänger | Gespann-Lader'
         desc = (f'{len(lst)} Schnelllader an der {a}: Wo kann man mit E-Auto und Wohnwagen laden, ohne abzukoppeln? '
                 f'Mit Preisen ohne Abo und Bewertungen von Gespannfahrern.')
