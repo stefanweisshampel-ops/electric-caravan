@@ -30,7 +30,16 @@ button,input,textarea{font:inherit;color:inherit}
 #routechip button{border:0;background:var(--paper);border-radius:14px;padding:5px 10px;font-size:13px}
 
 #legend{position:fixed;left:10px;top:64px;z-index:900;background:rgba(255,255,255,.92);border-radius:12px;padding:6px 10px;font-size:11.5px;color:var(--ink2);box-shadow:0 1px 6px rgba(0,0,0,.12);line-height:1.6}
-#legend i{display:inline-block;width:9px;height:9px;border-radius:5px;margin-right:6px}
+#legend i{display:inline-block;width:9px;height:9px;border-radius:5px;margin-right:6px;flex:none}
+#legend button{display:flex;align-items:center;width:100%;border:0;background:none;padding:3px 2px;margin:0;font-size:inherit;color:inherit;text-align:left;cursor:pointer;line-height:1.35;border-radius:6px}
+@media (hover:hover){#legend button:hover{background:rgba(0,0,0,.05)}}
+#legend button.off{opacity:.5;text-decoration:line-through}
+#legend button.off i,.seg.multi button.off i{background:transparent!important;box-shadow:inset 0 0 0 1.5px var(--ink3)}
+#legend small{display:block;font-size:10px;color:var(--ink3);margin-top:1px;padding-left:2px}
+.seg.multi button{display:flex;align-items:center;justify-content:center;gap:6px;flex:1 1 calc(50% - 3px)}
+.seg.multi button i{display:inline-block;width:9px;height:9px;border-radius:5px;flex:none}
+.seg.multi button.off{color:var(--ink3);font-weight:400}
+.fhint{display:block;color:var(--ink3);font-size:12.5px;margin-top:6px}
 body.route #legend{top:112px}
 #demo{position:fixed;left:50%;transform:translateX(-50%);top:64px;z-index:950;background:#fff6e5;border:1px solid #f3dfb4;color:#7a5200;border-radius:14px;padding:4px 10px;font-size:12px;display:none;white-space:nowrap}
 

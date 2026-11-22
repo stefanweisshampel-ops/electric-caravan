@@ -41,8 +41,14 @@
   }
 
   // ---------- state ----------
-  const DEFAULTS = { minKw: 100, stat: 'alle', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.62, hideUnknown: false, adac: true, motion: false, enbwm: false };
+  const DEFAULTS = { minKw: 100, hide: '', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.62, hideUnknown: false, adac: true, motion: false, enbwm: false };
   const F = Object.assign({}, DEFAULTS, store('gl-filter-v4') || {});
+  // Bewertungsfilter: früher ein Auswahlknopf (stat), jetzt einzeln ausblendbare Farben (hide)
+  const ST_KEYS = ['ja', 'eng', 'nein', 'open'];
+  const ST_LABEL = { ja: 'Durchfahrt', eng: 'Nur wenn wenig los', nein: 'Abkoppeln', open: 'Noch nicht bewertet' };
+  if ('stat' in F) { F.hide = ({ ja: 'eng,nein,open', offen: 'ja,eng,nein', 'ohne-nein': 'nein' })[F.stat] || ''; delete F.stat; }
+  let HIDs = null, HID = new Set();
+  function hidden() { if (HIDs !== F.hide) { HIDs = F.hide; HID = new Set(F.hide ? F.hide.split(',') : []); } return HID; }
   let sites = [], places = [], axes = {}, MW = [], STAND = {}, PSTAND = '';
   const grid = new Map();
   const siteByKey = new Map();
@@ -318,10 +324,7 @@
       const bp = bestPrice(s);
       if (bp == null) { if (F.hideUnknown) return false; } else if (bp > F.maxPrice + 1e-9) return false;
     }
-    const st = effStatus(s);
-    if (F.stat === 'ja' && st !== 'ja') return false;
-    if (F.stat === 'offen' && st) return false;
-    if (F.stat === 'ohne-nein' && st === 'nein') return false;
+    if (hidden().has(effStatus(s) || 'open')) return false;
     if (route && s.A[route.a] === undefined) return false;
     return true;
   }
@@ -747,15 +750,34 @@
   // ---------- filter panel ----------
   function syncFilterUi() {
     $('#fkw').querySelectorAll('button').forEach((b) => b.classList.toggle('on', +b.dataset.v === F.minKw));
-    $('#fstat').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.v === F.stat));
+    syncLegend();
     $('#fprice').querySelectorAll('button').forEach((b) => b.classList.toggle('on', (b.dataset.v === 'x' ? null : +b.dataset.v) === F.maxPrice));
     $('#ftruck').checked = F.hideTruck; $('#fmw').checked = F.mw; $('#fterm').checked = F.term; $('#frest').checked = F.rest;
     $('#funk').checked = F.hideUnknown; $('#fadac').checked = F.adac; $('#fmotion').checked = F.motion; $('#fenbw').checked = F.enbwm;
     $('#fop').value = F.op;
   }
+  function syncLegend() {
+    const h = hidden();
+    document.querySelectorAll('#legend button, #fstat button').forEach((b) => {
+      const on = !h.has(b.dataset.k);
+      b.classList.toggle('on', on); b.classList.toggle('off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    $('#leghint').style.display = store('gl-leg-used') ? 'none' : '';
+  }
+  function toggleStat(k) {
+    const h = new Set(hidden());
+    const off = !h.has(k);
+    if (off) h.add(k); else h.delete(k);
+    F.hide = ST_KEYS.filter((x) => h.has(x)).join(',');
+    store('gl-leg-used', 1);
+    filterChanged();
+    toast(h.size === ST_KEYS.length ? 'Alle Farben ausgeblendet. Antippen blendet sie wieder ein.' : ST_LABEL[k] + (off ? ': ausgeblendet' : ': wieder sichtbar'));
+  }
   function filterChanged() { store('gl-filter-v4', F); syncFilterUi(); refreshAll(); }
   $('#fkw').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { F.minKw = +b.dataset.v; filterChanged(); } });
-  $('#fstat').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { F.stat = b.dataset.v; filterChanged(); } });
+  $('#fstat').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) toggleStat(b.dataset.k); });
+  $('#legend').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) toggleStat(b.dataset.k); });
+  syncLegend();
   $('#fprice').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { F.maxPrice = b.dataset.v === 'x' ? null : +b.dataset.v; filterChanged(); } });
   $('#ftruck').addEventListener('change', (e) => { F.hideTruck = e.target.checked; filterChanged(); });
   $('#fmw').addEventListener('change', (e) => { F.mw = e.target.checked; filterChanged(); });
