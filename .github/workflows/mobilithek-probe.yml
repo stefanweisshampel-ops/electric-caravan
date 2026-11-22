@@ -89,13 +89,14 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/out"
           cp probe/summary.json probe/summary.txt "$RUNNER_TEMP/out/" 2>/dev/null || true
+          cp -r probe/samples "$RUNNER_TEMP/out/" 2>/dev/null || true
           cp probe/secrets.txt "$RUNNER_TEMP/out/zugang.txt" 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout --orphan mobilithek-probe
           git rm -rf --cached . >/dev/null
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-          cp "$RUNNER_TEMP/out/"* .
+          cp -r "$RUNNER_TEMP/out/"* .
           git add -A
           git commit -m "Mobilithek-Testabruf $(date -u +%FT%TZ)"
           git push -f origin mobilithek-probe

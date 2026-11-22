@@ -80,8 +80,30 @@ def analyse(name, data):
     }
 
 
+def sample_site(data):
+    """Erster Standort (gekürzt) als Strukturbeispiel."""
+    for path, d in walk(data):
+        sites = d.get('energyInfrastructureSite') or d.get('energyInfrastructureSiteStatus')
+        if isinstance(sites, list) and sites:
+            s = json.loads(json.dumps(sites[0]))
+            for st in s.get('energyInfrastructureStation', [])[:3]:
+                if isinstance(st.get('refillPoint'), list):
+                    st['refillPoint'] = st['refillPoint'][:2]
+            if isinstance(s.get('energyInfrastructureStation'), list):
+                s['energyInfrastructureStation'] = s['energyInfrastructureStation'][:2]
+            for st in s.get('energyInfrastructureStationStatus', [])[:3]:
+                if isinstance(st.get('refillPointStatus'), list):
+                    st['refillPointStatus'] = st['refillPointStatus'][:2]
+            if isinstance(s.get('energyInfrastructureStationStatus'), list):
+                s['energyInfrastructureStationStatus'] = s['energyInfrastructureStationStatus'][:2]
+            table_keys = {k: (v if not isinstance(v, (list, dict)) else type(v).__name__) for k, v in d.items() if not k.startswith('energyInfrastructureSite')}
+            return {'path': path, 'tableKeys': table_keys, 'site': s}
+    return None
+
+
 def main():
     res = {}
+    os.makedirs(os.path.join(OUT, 'samples'), exist_ok=True)
     for fn in sorted(os.listdir(RAW)):
         if not fn.endswith('.status'):
             continue
@@ -95,6 +117,9 @@ def main():
                 data = json.load(open(body, encoding='utf-8'))
                 r['topLevel'] = list(data.keys())[:10] if isinstance(data, dict) else type(data).__name__
                 r.update(analyse(name, data))
+                smp = sample_site(data)
+                if smp:
+                    json.dump(smp, open(os.path.join(OUT, 'samples', name + '.json'), 'w'), ensure_ascii=False, indent=1)
             except Exception as e:  # kein JSON → Anfang zeigen (Fehlermeldungen)
                 r['parseError'] = str(e)[:200]
                 r['head'] = open(body, 'rb').read(400).decode('utf-8', 'replace')
