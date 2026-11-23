@@ -1,0 +1,13 @@
+{
+  "_info": "Standorte, die laut Nutzermeldung nicht mehr existieren, aber noch im Ladesäulenregister der Bundesnetzagentur stehen. Sie werden auf der Karte und den Autobahnseiten ausgeblendet.",
+  "sites": [
+    {
+      "key": "DE-53.2349_13.9861",
+      "op": "Tesla Germany GmbH",
+      "addr": "Prenzlauer Str. 6, 17291 Uckerfelde",
+      "grund": "abgebaut",
+      "quelle": "Nutzermeldung (TFF-Forum, Anduko)",
+      "gemeldet": "2026-11-22"
+    }
+  ]
+}

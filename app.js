@@ -65,12 +65,13 @@
   const keyOf = (cc, lat, lon) => cc + '-' + lat.toFixed(4) + '_' + lon.toFixed(4);
   const cellOf = (lat, lon) => Math.round(lat / 0.01) + ':' + Math.round(lon / 0.01);
 
-  function decodeCountry(cc, d) {
+  function decodeCountry(cc, d, removed) {
     STAND[cc] = d.stand; PSTAND = d.priceStand || PSTAND;
     Object.assign(axes, d.axes || {});
     const prices = d.prices || [], adac = d.adac || {}, motion = d.motion || {}, enbwm = d.enbwm || {}, opPrice = d.opPrice || [];
     d.places.forEach((p) => places.push([p[0], p[1], p[2], p[3], p[4], cc]));
     d.sites.forEach((r) => {
+      if (removed && removed.has(keyOf(cc, r[0], r[1]))) return;  // laut Nutzermeldung abgebaut
       const fl = r[8];
       const A = {}; (r[12] || []).forEach(([a, p]) => { A[a] = p; AS.add(a); });
       const pi = opPrice[r[2]];
@@ -858,12 +859,14 @@
       const V = '?v=' + (window.GL_VERSION || Date.now());
       const countries = await fetchJson('data/countries.json' + V);
       const day = new Date().toISOString().slice(0, 10);
-      const [datas, mw, afir] = await Promise.all([
+      const [datas, mw, afir, removedList] = await Promise.all([
         Promise.all(countries.map((c) => fetchJson(c.file + V, 60000).then((d) => [c.code, d]))),
         fetchJson('data/mw.json' + V).catch(() => []),
         fetchJson('data/DE/afir.json' + V + '&d=' + day).catch(() => null),
+        fetchJson('data/DE/removed.json' + V).catch(() => null),
       ]);
-      datas.forEach(([cc, d]) => decodeCountry(cc, d));
+      const removed = new Set(((removedList && removedList.sites) || []).map((x) => x.key));
+      datas.forEach(([cc, d]) => decodeCountry(cc, d, removed));
       applyAfir(afir);
       MW = mw;
       places.sort((a, b) => b[4] - a[4]);

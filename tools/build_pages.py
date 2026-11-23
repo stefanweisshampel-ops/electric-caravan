@@ -60,8 +60,14 @@ def load_sites():
         afir = json.load(open(os.path.join(ROOT, 'data/DE/afir.json'), encoding='utf-8')).get('s', {})
     except (OSError, ValueError):
         afir = {}
+    try:  # laut Nutzermeldung abgebaute Standorte ausblenden
+        removed = {x['key'] for x in json.load(open(os.path.join(ROOT, 'data/DE/removed.json'), encoding='utf-8')).get('sites', [])}
+    except (OSError, ValueError):
+        removed = set()
     sites = []
     for r in d['sites']:
+        if 'DE-%.4f_%.4f' % (r[0], r[1]) in removed:
+            continue
         fl = r[8]
         pi = op_price[r[2]]
         p = prices[pi] if pi >= 0 else None
