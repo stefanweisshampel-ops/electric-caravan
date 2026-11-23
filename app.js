@@ -202,13 +202,25 @@
     loginBusy = false;
     if (error) {
       const m = /(\d+)\s*second/i.exec(error.message || '');
-      toast(m ? 'Bitte warte noch ' + m[1] + ' Sekunden, dann kannst du den Link erneut anfordern.'
-        : 'Anmelde-Link konnte nicht verschickt werden: ' + error.message, 6000);
+      toast(m ? 'Bitte warte noch ' + m[1] + ' Sekunden, dann kannst du eine neue Mail anfordern.'
+        : 'Anmelde-Mail konnte nicht verschickt werden: ' + error.message, 6000);
       return;
     }
-    loginSent = { email };
+    const again = !!(loginSent && loginSent.email === email);
+    loginSent = { email, at: Date.now() };
     rerenderLogin();
+    if (again) toast('Neue Mail ist unterwegs – ab jetzt gilt nur noch deren Code.', 5000);
   }
+  // „Erneut senden“ erst nach einer Minute freigeben (Supabase lässt pro Adresse nur eine Mail je Minute zu)
+  const RESEND_WAIT = 60000;
+  function updateResend() {
+    document.querySelectorAll('[data-resend]').forEach((b) => {
+      const left = loginSent ? Math.ceil((loginSent.at + RESEND_WAIT - Date.now()) / 1000) : 0;
+      b.disabled = left > 0;
+      b.textContent = left > 0 ? 'Erneut senden (in ' + left + ' s)' : 'Erneut senden';
+    });
+  }
+  setInterval(updateResend, 1000);
   // Alternativ zum Link: Code aus der Mail eintippen (hilft, wenn Werbeblocker die Link-Weiterleitung des Mailversands sperren
   // oder die Mail auf einem anderen Gerät gelesen wird)
   async function verifyLogin(code) {
@@ -219,7 +231,7 @@
     loginBusy = true;
     const { error } = await sb.auth.verifyOtp({ email: loginSent.email, token: code, type: 'email' });
     loginBusy = false;
-    if (error) { toast('Der Code passt nicht oder ist abgelaufen. Fordere bei Bedarf eine neue Mail an.', 6000); return; }
+    if (error) { toast('Der Code passt nicht oder ist abgelaufen. Nimm den Code aus der neuesten Mail – oder fordere eine neue an.', 7000); return; }
     toast('Angemeldet');
   }
   function loginHtml(p, intro) {
@@ -227,9 +239,10 @@
       return '<div class="sent"><b>Mail verschickt an ' + esc(loginSent.email) + '.</b><br>' +
         'Tippe auf den Link in der Mail – oder gib hier den Code aus der Mail ein:' +
         '<div class="login"><input id="' + p + 'code" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="Code aus der Mail"><button class="btn" id="' + p + 'verify">Anmelden</button></div>' +
-        '<div style="margin-top:8px">Nichts angekommen? Schau bitte auch im <b>Spam- oder Werbung-Ordner</b> nach, die Mail kann ein paar Minuten brauchen. ' +
-        'Falls sie dort liegt, markiere sie als „kein Spam“, dann kommen die nächsten Links sicher an.' +
-        '</div><div class="act"><button class="btn ghost" id="' + p + 'resend">Erneut senden</button><button class="btn link" id="' + p + 'other">Andere Adresse</button></div></div>';
+        '<div class="loginhint">Die Mail kann <b>ein paar Minuten</b> brauchen. Bitte nicht mehrfach anfordern: Mit jeder neuen Mail wird der Code der vorherigen ungültig – es gilt immer nur der Code aus der <b>neuesten</b> Mail.</div>' +
+        '<div style="margin-top:8px">Nichts angekommen? Schau bitte auch im <b>Spam- oder Werbung-Ordner</b> nach. ' +
+        'Falls sie dort liegt, markiere sie als „kein Spam“, dann kommen die nächsten Mails sicher an.' +
+        '</div><div class="act"><button class="btn ghost" data-resend id="' + p + 'resend">Erneut senden</button><button class="btn link" id="' + p + 'other">Andere Adresse</button></div></div>';
     }
     return (intro ? '<div class="note" style="margin-top:0">' + intro + '</div>' : '') +
       '<div class="login"><input id="' + p + 'email" type="email" autocomplete="email" placeholder="E-Mail-Adresse"><button class="btn" id="' + p + 'send">Anmelde-Mail senden</button></div>' +
@@ -245,7 +258,7 @@
     on('other', () => { loginSent = null; rerenderLogin(); });
     if (el('email')) el('email').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendLogin(el('email').value); } });
   }
-  function rerenderLogin() { renderAcct(); if (detail) renderDetail(); }
+  function rerenderLogin() { renderAcct(); if (detail) renderDetail(); updateResend(); }
   async function logout() { if (sb) await sb.auth.signOut(); toast('Abgemeldet'); }
 
   // backend: demo (nur dieser Browser)
