@@ -666,6 +666,10 @@
       '<button data-s="ja"' + dis + '>Durchfahrt<br>möglich</button>' +
       '<button data-s="eng"' + dis + '>Nur wenn<br>wenig los</button>' +
       '<button data-s="nein"' + dis + '>Abkoppeln<br>nötig</button></div>' +
+      '<ul class="rhelp">' +
+      '<li><b>Durchfahrt möglich:</b> vorwärts rein und vorwärts raus, ohne andere Plätze zu blockieren – z. B. eigene Gespann-Plätze oder Säulen längs der Fahrspur.</li>' +
+      '<li><b>Nur wenn wenig los:</b> klappt ohne Abkoppeln, belegt aber mehrere Plätze oder die Fahrgasse.</li>' +
+      '<li><b>Abkoppeln nötig:</b> mit Anhänger kommt man nicht an die Säule, z. B. wegen Bordstein, enger Buchten oder zu kurzer Kabel.</li></ul>' +
       '<textarea class="n" id="note" maxlength="300" placeholder="Notiz, z. B. „Durchfahrt nur an Säule 3“ oder „Einfahrt zu eng“"' + dis + '>' + esc(m ? m.note : '') + '</textarea>' +
       '<div class="act"><button class="btn" id="save"' + dis + '>' + (m ? 'Bewertung ändern' : 'Speichern') + '</button>' +
       (m ? '<button class="btn ghost" id="del"' + dis + '>Löschen</button>' : '') +

@@ -91,6 +91,9 @@ body.route #legend{top:112px}
 .notes li{font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--line);line-height:1.4}
 .notes li small{color:var(--ink3);display:block}
 .rbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.rhelp{list-style:none;margin:8px 0 2px;padding:0;font-size:12.5px;line-height:1.4;color:var(--ink2)}
+.rhelp li{margin:3px 0}
+.rhelp b{color:var(--ink)}
 .rbtns button{border:1.5px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 4px;font-size:13px;font-weight:600;line-height:1.2}
 .rbtns button[data-s=ja].on{border-color:var(--ok);background:#e8f5ee;color:#126a37}
 .rbtns button[data-s=eng].on{border-color:var(--mid);background:#fdf3e1;color:#8a5800}
