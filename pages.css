@@ -25,6 +25,7 @@ td.num { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .b.ja { background: #e2f2e8; color: #126a37; }
 .b.eng { background: #fbefd6; color: #8a5800; }
 .b.nein { background: #f8e1e1; color: #9e2626; }
+.b.ungeeignet { background: #24292f; color: #fff; }
 .b.open { background: #eef0f2; color: #55606b; font-weight: 500; }
 td small { display: block; font-size: 12px; color: #8a939b; }
 .alist { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }

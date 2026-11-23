@@ -11,7 +11,7 @@ create table if not exists public.ratings (
   country     text not null check (country ~ '^[A-Z]{2}$'),
   lat         double precision not null check (lat between -90 and 90),
   lon         double precision not null check (lon between -180 and 180),
-  status      text not null check (status in ('ja', 'eng', 'nein')),
+  status      text not null check (status in ('ja', 'eng', 'nein', 'ungeeignet')),
   note        text not null default '' check (char_length(note) <= 300),
   site_name   text not null default '' check (char_length(site_name) <= 120),
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -52,16 +52,19 @@ create policy "eigene löschen" on public.ratings
 
 -- ---------- Öffentliche, anonyme Sicht auf die Bewertungen -------------
 -- Zusammenfassung pro Standort für die Karte (ohne Personenbezug).
+-- n_ungeeignet steht hinten, damit ältere Aufrufer die Spalten wie bisher finden.
+-- Bei Änderung des Rückgabetyps vorher: drop function public.site_stats(text);
 create or replace function public.site_stats(p_country text default null)
 returns table (site_key text, lat double precision, lon double precision,
-               n_ja int, n_eng int, n_nein int, last_at timestamptz)
+               n_ja int, n_eng int, n_nein int, last_at timestamptz, n_ungeeignet int)
 language sql stable security definer set search_path = '' as $$
   select r.site_key,
          avg(r.lat), avg(r.lon),
          count(*) filter (where r.status = 'ja')::int,
          count(*) filter (where r.status = 'eng')::int,
          count(*) filter (where r.status = 'nein')::int,
-         max(r.updated_at)
+         max(r.updated_at),
+         count(*) filter (where r.status = 'ungeeignet')::int
   from public.ratings r
   where p_country is null or r.country = p_country
   group by r.site_key

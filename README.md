@@ -99,7 +99,7 @@ Die Stationsdaten stammen aus dem Ladesäulenregister der Bundesnetzagentur. Neu
 
 ## Wie die Bewertungen gespeichert werden
 
-- Tabelle `ratings`: eine Bewertung pro Person und Standort (Durchfahrt / nur wenn wenig los / abkoppeln + Notiz bis 300 Zeichen).
+- Tabelle `ratings`: eine Bewertung pro Person und Standort (Durchfahrt / nur wenn wenig los / abkoppeln / ungeeignet + Notiz bis 300 Zeichen).
 - Lesen dürfen alle nur die **Zusammenfassung** (Anzahl je Bewertung) und die Notizen – ohne Namen oder E-Mail-Adressen.
 - Ändern und Löschen kann jede Person nur ihre eigenen Bewertungen.
 - Meldungen („Falsche Angabe melden“) landen in der Tabelle `reports` und sind nur für dich im Supabase-Dashboard sichtbar (Table Editor).

@@ -20,7 +20,7 @@ import urllib.request
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 SITE = 'https://gespann-lader.de'
 MIN_KW = 100
-STATUS = {'ja': 'Durchfahrt möglich', 'eng': 'Nur wenn wenig los', 'nein': 'Abkoppeln nötig'}
+STATUS = {'ja': 'Durchfahrt möglich', 'eng': 'Nur wenn wenig los', 'nein': 'Abkoppeln nötig', 'ungeeignet': 'Ungeeignet für Gespanne'}
 E = html.escape
 
 
@@ -112,8 +112,8 @@ def attach_stats(sites, stats):
                             bd, s = dd, t
         if not s:
             continue
-        st = s['st'] or {'ja': 0, 'eng': 0, 'nein': 0}
-        for k in ('ja', 'eng', 'nein'):
+        st = s['st'] or {'ja': 0, 'eng': 0, 'nein': 0, 'ungeeignet': 0}
+        for k in ('ja', 'eng', 'nein', 'ungeeignet'):
             st[k] += int(r.get('n_' + k) or 0)
         s['st'] = st
 
@@ -123,7 +123,7 @@ def status_of(s):
     if not st or not sum(st.values()):
         return None
     m = max(st.values())
-    for k in ('nein', 'eng', 'ja'):  # bei Gleichstand die vorsichtigere Einschätzung
+    for k in ('ungeeignet', 'nein', 'eng', 'ja'):  # bei Gleichstand die vorsichtigere Einschätzung
         if st[k] == m:
             return k
 
@@ -234,8 +234,12 @@ def build():
         intro = (f'Entlang der {a} gibt es {len(lst)} Schnellladestandorte für Pkw mit mindestens {MIN_KW} kW, '
                  f'höchstens drei Kilometer von der Autobahn entfernt. ')
         if n_r:
-            intro += (f'{n_r} davon haben Gespannfahrer schon bewertet: {cnt["ja"]} mit Durchfahrt, '
-                      f'{cnt["eng"]} nur wenn wenig los ist und {cnt["nein"]} nur mit Abkoppeln. ')
+            teile = [f'{cnt["ja"]} mit Durchfahrt', f'{cnt["eng"]} nur wenn wenig los ist',
+                     f'{cnt["nein"]} nur mit Abkoppeln']
+            if cnt['ungeeignet']:
+                teile.append(f'{cnt["ungeeignet"]} gar nicht für Gespanne')
+            intro += (f'{n_r} davon haben Gespannfahrer schon bewertet: '
+                      + ', '.join(teile[:-1]) + ' und ' + teile[-1] + '. ')
         else:
             intro += 'Noch hat niemand einen davon bewertet – fang gern an. '
         intro += (f'{len(cheap)} Standorte gehören zu Betreibern, die ohne Abo höchstens 0,62 € pro kWh verlangen. '

@@ -22,7 +22,7 @@
 <meta property="og:image:alt" content="Gespann-Lader: Karte der Schnelllader in Deutschland mit den Bewertungen Durchfahrt möglich, Nur wenn wenig los, Abkoppeln nötig">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="vendor/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=20261123c">
+<link rel="stylesheet" href="style.css?v=20261123d">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Gespann-Lader", "url": "https://gespann-lader.de/", "description": "Karte der Schnellladesäulen, an denen man mit E-Auto und Wohnwagen oder Anhänger laden kann, ohne abzukoppeln – bewertet von Gespannfahrern.", "applicationCategory": "TravelApplication", "operatingSystem": "Web", "inLanguage": "de", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "image": "https://gespann-lader.de/og.png"}</script>
 </head>
 <body>
@@ -53,6 +53,7 @@
   <button data-k="ja" aria-pressed="true"><i style="background:var(--ok)"></i>Durchfahrt</button>
   <button data-k="eng" aria-pressed="true"><i style="background:var(--mid)"></i>nur wenn wenig los</button>
   <button data-k="nein" aria-pressed="true"><i style="background:var(--no)"></i>abkoppeln</button>
+  <button data-k="ungeeignet" aria-pressed="true"><i style="background:var(--bad)"></i>ungeeignet</button>
   <button data-k="open" aria-pressed="true"><i style="background:var(--open)"></i>noch nicht bewertet</button>
   <small id="leghint">antippen blendet aus</small>
 </div>
@@ -75,7 +76,7 @@
       <label class="tog"><input type="checkbox" id="fenbw"> <span>Ich habe mindestens EnBW Ladetarif M<small>EnBW dann 0,46 € statt 0,56 € (Abo 5,99 € im Monat, für ACV-Mitglieder 3,99 €).</small></span></label>
       <label class="tog"><input type="checkbox" id="funk"> <span>Betreiber ohne bekannten Preis ausblenden<small>Für rund ein Fünftel der Standorte ab 100 kW ist kein Preis hinterlegt.</small></span></label></div>
     <div class="fgroup"><div class="lbl">Gespann-Bewertung: diese Farben zeigen</div>
-      <div class="seg multi" id="fstat"><button data-k="ja"><i style="background:var(--ok)"></i>Durchfahrt</button><button data-k="eng"><i style="background:var(--mid)"></i>nur wenn wenig los</button><button data-k="nein"><i style="background:var(--no)"></i>abkoppeln</button><button data-k="open"><i style="background:var(--open)"></i>noch nicht bewertet</button></div>
+      <div class="seg multi" id="fstat"><button data-k="ja"><i style="background:var(--ok)"></i>Durchfahrt</button><button data-k="eng"><i style="background:var(--mid)"></i>nur wenn wenig los</button><button data-k="nein"><i style="background:var(--no)"></i>abkoppeln</button><button data-k="ungeeignet"><i style="background:var(--bad)"></i>ungeeignet</button><button data-k="open"><i style="background:var(--open)"></i>noch nicht bewertet</button></div>
       <small class="fhint">Geht auch direkt über die Farblegende auf der Karte.</small></div>
     <div class="fgroup">
       <label class="tog"><input type="checkbox" id="ftruck"> <span>Lkw-Ladeparks ausblenden<small>Dort funktionieren Pkw-Ladekarten meist nicht.</small></span></label>
@@ -93,7 +94,7 @@
     <h3>Konto &amp; Info <button class="btn ghost" id="iclose">Schließen</button></h3>
     <div class="acct" id="acct"></div>
     <p><b>Wozu:</b> Schnelllader finden, an denen man mit Anhänger oder Wohnwagen durchfahren kann, ohne abzukoppeln. Das steht in keinem amtlichen Datensatz – deshalb bewerten Gespannfahrer die Standorte selbst. Je mehr mitmachen, desto besser wird die Karte.</p>
-    <p><b>So bewertest du:</b> Standort antippen, per Luftbild oder vor Ort prüfen, dann wählen: <b>„Durchfahrt möglich“</b> heißt vorwärts rein und vorwärts raus, ohne andere Plätze zu blockieren – z. B. eigene Gespann-Plätze oder Säulen längs der Fahrspur. <b>„Nur wenn wenig los“</b> heißt: klappt ohne Abkoppeln, belegt aber mehrere Plätze oder die Fahrgasse. <b>„Abkoppeln nötig“</b> heißt: mit Anhänger kommt man nicht an die Säule, z. B. wegen Bordstein, enger Buchten oder zu kurzer Kabel. Die Farbe auf der Karte zeigt die häufigste Bewertung, bei Gleichstand die vorsichtigere.</p>
+    <p><b>So bewertest du:</b> Standort antippen, per Luftbild oder vor Ort prüfen, dann wählen: <b>„Durchfahrt möglich“</b> heißt vorwärts rein und vorwärts raus, ohne andere Plätze zu blockieren – z. B. eigene Gespann-Plätze oder Säulen längs der Fahrspur. <b>„Nur wenn wenig los“</b> heißt: klappt ohne Abkoppeln, belegt aber mehrere Plätze oder die Fahrgasse. <b>„Abkoppeln nötig“</b> heißt: mit Anhänger kommt man nicht an die Säule, z. B. wegen Bordstein, enger Buchten oder zu kurzer Kabel, kann ihn aber in der Nähe abstellen. <b>„Ungeeignet für Gespanne“</b> (schwarz) heißt: auch Abkoppeln hilft kaum – kein Platz, um den Anhänger abzustellen, Parkhaus, Säule am Straßenrand oder zu enge Zufahrt. Die Farbe auf der Karte zeigt die häufigste Bewertung, bei Gleichstand die vorsichtigere.</p>
     <p><b>Lkw-Ladeparks</b> werden am MCS-Stecker, an sehr hoher Leistung (ab 600 kW) oder an Namen wie Milence, „Truck“ oder „LKW“ erkannt. Das ist eine Heuristik.</p>
     <p><b>Preise ohne Abo:</b> Pro Betreiber hinterlegt sind der Ad-hoc-Preis und, falls vorhanden, der Preis der eigenen App ohne Grundgebühr, jeweils fürs Schnellladen. Gefiltert wird mit dem günstigsten davon; bei Preisspannen zählt der untere Wert. Fremde Ladekarten sind nicht eingerechnet. Verbindlich ist immer der Preis vor dem Ladestart.</p>
     <p id="istand"></p>
@@ -106,8 +107,8 @@
 
 <script src="vendor/maplibre-gl.js"></script>
 <script src="vendor/supabase.js"></script>
-<script src="config.js?v=20261123c"></script>
-<script>window.GL_VERSION = "20261123c";</script>
-<script src="app.js?v=20261123c"></script>
+<script src="config.js?v=20261123d"></script>
+<script>window.GL_VERSION = "20261123d";</script>
+<script src="app.js?v=20261123d"></script>
 </body>
 </html>

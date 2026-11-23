@@ -15,8 +15,8 @@
   const fmtDate = (t) => { try { return new Date(t).toLocaleDateString('de-DE'); } catch (e) { return ''; } };
   const KX = 111.32 * Math.cos(51 * Math.PI / 180), KY = 110.57;
   const dist = (a, b, c, d) => Math.hypot((a - c) * KY, (b - d) * KX);
-  const COLORS = { ja: '#1f8f4e', eng: '#d48806', nein: '#cf3d3d', open: '#3a6ea5', truck: '#9aa1a9' };
-  const STATUS_TXT = { ja: 'Durchfahrt möglich', eng: 'Nur wenn wenig los', nein: 'Abkoppeln nötig' };
+  const COLORS = { ja: '#1f8f4e', eng: '#d48806', nein: '#cf3d3d', ungeeignet: '#24292f', open: '#3a6ea5', truck: '#9aa1a9' };
+  const STATUS_TXT = { ja: 'Durchfahrt möglich', eng: 'Nur wenn wenig los', nein: 'Abkoppeln nötig', ungeeignet: 'Ungeeignet für Gespanne' };
   let toastT = null;
   function toast(msg, ms) {
     const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
@@ -44,9 +44,9 @@
   const DEFAULTS = { minKw: 100, hide: '', hideTruck: true, mw: false, term: false, rest: false, op: '', maxPrice: 0.62, hideUnknown: false, adac: true, motion: false, enbwm: false };
   const F = Object.assign({}, DEFAULTS, store('gl-filter-v4') || {});
   // Bewertungsfilter: früher ein Auswahlknopf (stat), jetzt einzeln ausblendbare Farben (hide)
-  const ST_KEYS = ['ja', 'eng', 'nein', 'open'];
-  const ST_LABEL = { ja: 'Durchfahrt', eng: 'Nur wenn wenig los', nein: 'Abkoppeln', open: 'Noch nicht bewertet' };
-  if ('stat' in F) { F.hide = ({ ja: 'eng,nein,open', offen: 'ja,eng,nein', 'ohne-nein': 'nein' })[F.stat] || ''; delete F.stat; }
+  const ST_KEYS = ['ja', 'eng', 'nein', 'ungeeignet', 'open'];
+  const ST_LABEL = { ja: 'Durchfahrt', eng: 'Nur wenn wenig los', nein: 'Abkoppeln', ungeeignet: 'Ungeeignet für Gespanne', open: 'Noch nicht bewertet' };
+  if ('stat' in F) { F.hide = ({ ja: 'eng,nein,ungeeignet,open', offen: 'ja,eng,nein,ungeeignet', 'ohne-nein': 'nein,ungeeignet' })[F.stat] || ''; delete F.stat; }
   let HIDs = null, HID = new Set();
   function hidden() { if (HIDs !== F.hide) { HIDs = F.hide; HID = new Set(F.hide ? F.hide.split(',') : []); } return HID; }
   let sites = [], places = [], axes = {}, MW = [], STAND = {}, PSTAND = '';
@@ -119,11 +119,13 @@
   }
 
   // ---------- ratings ----------
+  const nRatings = (st) => st.ja + st.eng + st.nein + st.ungeeignet;
   function statusOf(s) {
     const st = s.st;
-    if (!st || !(st.ja + st.eng + st.nein)) return null;
-    const m = Math.max(st.ja, st.eng, st.nein);
-    if (st.nein === m) return 'nein';   // bei Gleichstand die vorsichtigere Einschätzung
+    if (!st || !nRatings(st)) return null;
+    const m = Math.max(st.ja, st.eng, st.nein, st.ungeeignet);
+    if (st.ungeeignet === m) return 'ungeeignet';   // bei Gleichstand die vorsichtigere Einschätzung
+    if (st.nein === m) return 'nein';
     if (st.eng === m) return 'eng';
     return 'ja';
   }
@@ -135,8 +137,8 @@
     ratedSites = new Set();
     (rows || []).forEach((r) => {
       const s = siteFor(r.site_key, r.lat, r.lon); if (!s) return;
-      const st = s.st || { ja: 0, eng: 0, nein: 0, last: null };
-      st.ja += r.n_ja | 0; st.eng += r.n_eng | 0; st.nein += r.n_nein | 0;
+      const st = s.st || { ja: 0, eng: 0, nein: 0, ungeeignet: 0, last: null };
+      st.ja += r.n_ja | 0; st.eng += r.n_eng | 0; st.nein += r.n_nein | 0; st.ungeeignet += r.n_ungeeignet | 0;
       if (!st.last || (r.last_at && r.last_at > st.last)) st.last = r.last_at;
       s.st = st; s.statKey = s.statKey || r.site_key; ratedSites.add(s);
     });
@@ -266,7 +268,7 @@
   function loadDemo() {
     const all = demoStore();
     const rows = Object.keys(all).map((k) => Object.assign({ site_key: k }, all[k]));
-    applyStats(rows.map((r) => ({ site_key: r.site_key, lat: r.lat, lon: r.lon, n_ja: r.status === 'ja' ? 1 : 0, n_eng: r.status === 'eng' ? 1 : 0, n_nein: r.status === 'nein' ? 1 : 0, last_at: r.updated_at })));
+    applyStats(rows.map((r) => ({ site_key: r.site_key, lat: r.lat, lon: r.lon, n_ja: r.status === 'ja' ? 1 : 0, n_eng: r.status === 'eng' ? 1 : 0, n_nein: r.status === 'nein' ? 1 : 0, n_ungeeignet: r.status === 'ungeeignet' ? 1 : 0, last_at: r.updated_at })));
     applyMine(rows);
   }
 
@@ -394,7 +396,7 @@
       id: 'sites-c', type: 'circle', source: 'sites',
       layout: { 'circle-sort-key': ['get', 'o'] },
       paint: {
-        'circle-color': ['match', ['get', 'c'], 'ja', COLORS.ja, 'eng', COLORS.eng, 'nein', COLORS.nein, 'truck', COLORS.truck, COLORS.open],
+        'circle-color': ['match', ['get', 'c'], 'ja', COLORS.ja, 'eng', COLORS.eng, 'nein', COLORS.nein, 'ungeeignet', COLORS.ungeeignet, 'truck', COLORS.truck, COLORS.open],
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, ['case', ['==', ['get', 'r'], 1], 3.4, 1.8], 7, ['case', ['==', ['get', 'r'], 1], 5, 3.4], 10, ['case', ['==', ['get', 'r'], 1], 8, 6], 14, ['case', ['==', ['get', 'r'], 1], 11, 9]],
         'circle-stroke-color': '#ffffff',
         'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 0.5, 9, 1.5],
@@ -510,7 +512,7 @@
     const st = statusOf(s);
     const sub = [];
     if (!route && s.mw != null && s.mw <= 3) sub.push(fmtKm(s.mw) + ' zur Autobahn');
-    if (st) { const n = s.st.ja + s.st.eng + s.st.nein; sub.push(STATUS_TXT[st] + (n > 1 ? ' (' + n + ' Bewertungen)' : '')); }
+    if (st) { const n = nRatings(s.st); sub.push(STATUS_TXT[st] + (n > 1 ? ' (' + n + ' Bewertungen)' : '')); }
     else if (opTrailer(s)) sub.push('Durchfahrt laut Betreiber');
     if (s.truck) sub.push('Lkw-Ladepark');
     if (s.term) sub.push('Kartenterminal');
@@ -534,7 +536,7 @@
     head.innerHTML = '<h2>Schnelllader</h2><span class="sub">' + inView.length.toLocaleString('de-DE') + ' im Ausschnitt' + (backend === 'demo' ? ' · Demo-Modus' : '') + '</span>';
     if (z < 8 && inView.length > 150) {
       body.innerHTML = '<div class="empty">Suche oben einen <b>Ort</b> oder eine <b>Autobahn</b> (z. B. „A9“), nutze die Standort-Taste oder zoome in die Karte.<br><br>' +
-        'Tippe einen Standort an, prüfe ihn per Luftbild und bewerte ihn: <b>Durchfahrt</b>, <b>nur wenn wenig los</b> oder <b>abkoppeln</b>. ' +
+        'Tippe einen Standort an, prüfe ihn per Luftbild und bewerte ihn: <b>Durchfahrt</b>, <b>nur wenn wenig los</b>, <b>abkoppeln</b> oder <b>ungeeignet</b>. ' +
         'Bisher bewertet: <b>' + ratedSites.size.toLocaleString('de-DE') + '</b> Standort' + (ratedSites.size === 1 ? '' : 'e') + (mineSites.size ? ', davon <b>' + mineSites.size + '</b> von dir' : '') + '.</div>' + legalHtml;
       return;
     }
@@ -662,7 +664,8 @@
     const tally = '<div class="tally">' +
       (st.ja ? '<span class="ja">' + st.ja + '× Durchfahrt</span>' : '') +
       (st.eng ? '<span class="eng">' + st.eng + '× nur wenn wenig los</span>' : '') +
-      (st.nein ? '<span class="nein">' + st.nein + '× abkoppeln</span>' : '') + '</div>';
+      (st.nein ? '<span class="nein">' + st.nein + '× abkoppeln</span>' : '') +
+      (st.ungeeignet ? '<span class="ungeeignet">' + st.ungeeignet + '× ungeeignet</span>' : '') + '</div>';
     const notes = backend === 'demo'
       ? (s.mine && s.mine.note ? [{ status: s.mine.status, note: s.mine.note, updated_at: s.mine.t, is_mine: true }] : [])
       : (notesCache.get(s.statKey || s.key) || []).filter((r) => r.note);
@@ -679,11 +682,13 @@
     return '<div class="rbtns">' +
       '<button data-s="ja"' + dis + '>Durchfahrt<br>möglich</button>' +
       '<button data-s="eng"' + dis + '>Nur wenn<br>wenig los</button>' +
-      '<button data-s="nein"' + dis + '>Abkoppeln<br>nötig</button></div>' +
+      '<button data-s="nein"' + dis + '>Abkoppeln<br>nötig</button>' +
+      '<button data-s="ungeeignet"' + dis + '>Ungeeignet<br>für Gespanne</button></div>' +
       '<ul class="rhelp">' +
       '<li><b>Durchfahrt möglich:</b> vorwärts rein und vorwärts raus, ohne andere Plätze zu blockieren – z. B. eigene Gespann-Plätze oder Säulen längs der Fahrspur.</li>' +
       '<li><b>Nur wenn wenig los:</b> klappt ohne Abkoppeln, belegt aber mehrere Plätze oder die Fahrgasse.</li>' +
-      '<li><b>Abkoppeln nötig:</b> mit Anhänger kommt man nicht an die Säule, z. B. wegen Bordstein, enger Buchten oder zu kurzer Kabel.</li></ul>' +
+      '<li><b>Abkoppeln nötig:</b> mit Anhänger kommt man nicht an die Säule, z. B. wegen Bordstein, enger Buchten oder zu kurzer Kabel. Den Anhänger kann man aber in der Nähe abstellen.</li>' +
+      '<li><b>Ungeeignet für Gespanne:</b> auch Abkoppeln hilft kaum – kein Platz, um den Anhänger abzustellen, Parkhaus, Säule am Straßenrand oder zu enge Zufahrt.</li></ul>' +
       '<textarea class="n" id="note" maxlength="300" placeholder="Notiz, z. B. „Durchfahrt nur an Säule 3“ oder „Einfahrt zu eng“"' + dis + '>' + esc(m ? m.note : '') + '</textarea>' +
       '<div class="act"><button class="btn" id="save"' + dis + '>' + (m ? 'Bewertung ändern' : 'Speichern') + '</button>' +
       (m ? '<button class="btn ghost" id="del"' + dis + '>Löschen</button>' : '') +
