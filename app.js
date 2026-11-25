@@ -516,7 +516,7 @@
   });
 
   const srcLink = (x) => x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.quelle || 'Quelle') + '</a>' : esc(x.quelle || '');
-  const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></div>';
+  const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a><div class="nofuss"><i>♥</i> Kein Tracking, keine Werbung, kein Cookie-Banner <i>♥</i></div></div>';
   function rowHtml(s, extra) {
     const st = statusOf(s);
     const sub = [];
