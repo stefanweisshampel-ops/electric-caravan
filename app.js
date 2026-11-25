@@ -730,7 +730,8 @@
       ['https://www.google.com/maps/@?api=1&map_action=map&center=' + ll + '&zoom=19&basemap=satellite', ICON.sat, 'Luftbild Google'],
       ['https://maps.apple.com/?ll=' + ll + '&z=19&t=k', ICON.sat, 'Luftbild Apple'],
       ['https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + ll, ICON.sv, 'Street View'],
-      ['https://www.google.com/maps/dir/?api=1&destination=' + ll + '&travelmode=driving', ICON.nav, 'Navigation'],
+      ['https://www.google.com/maps/dir/?api=1&destination=' + ll + '&travelmode=driving', ICON.nav, 'Navi Google'],
+      ['https://maps.apple.com/?daddr=' + ll + '&dirflg=d', ICON.nav, 'Navi Apple'],
     ].map(([h, ic, t]) => '<a href="' + h + '" target="_blank" rel="noopener">' + ic + '<span>' + t + '</span></a>').join('');
     body.innerHTML = '<div class="det">' +
       '<h3>' + esc(s.name || s.op) + '</h3>' +
