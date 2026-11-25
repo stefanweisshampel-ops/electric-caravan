@@ -95,6 +95,14 @@
       sites.push(s);
     });
   }
+  // Lkw-Ladeparks mit Freigabe für Pkw mit Anhänger (data/DE/lkw-ausnahmen.json):
+  // trotz Lkw-Filter sichtbar, normale Bewertungsfarbe, aber KEINE automatische Bewertung.
+  function applyPkwOk(list) {
+    ((list && list.sites) || []).forEach((x) => {
+      sites.forEach((s) => { if (s.truck && dist(x.lat, x.lon, s.lat, s.lon) < 0.15) s.pkwOk = x; });
+    });
+  }
+  const isTruckOnly = (s) => s.truck && !s.pkwOk;
   let AFIR_STAND = '';
   function applyAfir(a) {
     if (!a || !a.s) return;
@@ -346,7 +354,7 @@
 
   // ---------- filtering ----------
   function passes(s) {
-    if (s.truck && F.hideTruck) return false;
+    if (isTruckOnly(s) && F.hideTruck) return false;
     if (s.kw < F.minKw) return false;
     if (F.mw && !(s.mw != null && s.mw <= 3)) return false;
     if (F.term && !s.term) return false;
@@ -361,7 +369,7 @@
     return true;
   }
   const filterActive = () => Object.keys(DEFAULTS).some((k) => F[k] !== DEFAULTS[k]);
-  const colorKey = (s) => (s.truck ? 'truck' : (effStatus(s) || 'open'));
+  const colorKey = (s) => (isTruckOnly(s) ? 'truck' : (effStatus(s) || 'open'));
   const colorOf = (s) => COLORS[colorKey(s)];
 
   // ---------- map ----------
@@ -447,7 +455,7 @@
       type: 'FeatureCollection',
       features: vis.map((s) => ({
         type: 'Feature', geometry: { type: 'Point', coordinates: [s.lon, s.lat] },
-        properties: { i: s.i, c: colorKey(s), r: s.st ? 1 : 0, o: s.st ? 2 : (s.truck ? 0 : 1), n: s.name || s.op },
+        properties: { i: s.i, c: colorKey(s), r: s.st ? 1 : 0, o: s.st ? 2 : (isTruckOnly(s) ? 0 : 1), n: s.name || s.op },
       })),
     });
     map.getSource('sel').setData({ type: 'FeatureCollection', features: detail ? [{ type: 'Feature', geometry: { type: 'Point', coordinates: [detail.lon, detail.lat] }, properties: {} }] : [] });
@@ -507,6 +515,7 @@
     const s = sheetSize(); setSheet(s === 'mid' ? 'big' : s === 'big' ? 'small' : 'mid');
   });
 
+  const srcLink = (x) => x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.quelle || 'Quelle') + '</a>' : esc(x.quelle || '');
   const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></div>';
   function rowHtml(s, extra) {
     const st = statusOf(s);
@@ -514,7 +523,7 @@
     if (!route && s.mw != null && s.mw <= 3) sub.push(fmtKm(s.mw) + ' zur Autobahn');
     if (st) { const n = nRatings(s.st); sub.push(STATUS_TXT[st] + (n > 1 ? ' (' + n + ' Bewertungen)' : '')); }
     else if (opTrailer(s)) sub.push('Durchfahrt laut Betreiber');
-    if (s.truck) sub.push('Lkw-Ladepark');
+    if (s.truck) sub.push(s.pkwOk ? 'Lkw-Ladepark, auch für Pkw mit Anhänger' : 'Lkw-Ladepark');
     if (s.term) sub.push('Kartenterminal');
     if (s.rest) sub.push('Autohof/Rastanlage');
     return '<button class="row" data-i="' + s.i + '">' +
@@ -728,7 +737,9 @@
       (s.name ? '<div class="op">' + esc(s.op) + '</div>' : '') +
       '<div class="addr">' + esc(s.addr) + '</div>' +
       (s.extra ? '<div class="extra">' + esc(s.extra) + '</div>' : '') +
-      (s.truck ? '<div class="warn"><b>Lkw-Ladepark.</b> Pkw-Ladekarten funktionieren hier meist nicht.</div>' : '') +
+      (s.pkwOk ? '<div class="note pkwok"><b>Lkw-Ladepark, auch für Pkw mit Anhänger.</b> ' + esc(s.pkwOk.hinweis || '') +
+        ' Quelle: ' + srcLink(s.pkwOk) + '.' + (s.st ? '' : ' Bewertet hat ihn mit Gespann noch niemand – wer dort war, bitte unten eintragen.') + '</div>'
+        : s.truck ? '<div class="warn"><b>Lkw-Ladepark.</b> Pkw-Ladekarten funktionieren hier meist nicht.</div>' : '') +
       '<div class="chips">' + chips.join('') + '</div>' +
       '<div class="links">' + links + '</div>' +
       '<div class="sec"><h4>Mit Gespann – Bewertungen</h4>' + communityHtml(s) +
@@ -877,14 +888,16 @@
       const V = '?v=' + (window.GL_VERSION || Date.now());
       const countries = await fetchJson('data/countries.json' + V);
       const day = new Date().toISOString().slice(0, 10);
-      const [datas, mw, afir, removedList] = await Promise.all([
+      const [datas, mw, afir, removedList, pkwOkList] = await Promise.all([
         Promise.all(countries.map((c) => fetchJson(c.file + V, 60000).then((d) => [c.code, d]))),
         fetchJson('data/mw.json' + V).catch(() => []),
         fetchJson('data/DE/afir.json' + V + '&d=' + day).catch(() => null),
         fetchJson('data/DE/removed.json' + V).catch(() => null),
+        fetchJson('data/DE/lkw-ausnahmen.json' + V).catch(() => null),
       ]);
       const removed = new Set(((removedList && removedList.sites) || []).map((x) => x.key));
       datas.forEach(([cc, d]) => decodeCountry(cc, d, removed));
+      applyPkwOk(pkwOkList);
       applyAfir(afir);
       MW = mw;
       places.sort((a, b) => b[4] - a[4]);
@@ -892,7 +905,7 @@
       $('#loading').textContent = 'Die Ladesäulendaten konnten nicht geladen werden.';
       return;
     }
-    const nCar = sites.filter((s) => !s.truck).length;
+    const nCar = sites.filter((s) => !isTruckOnly(s)).length;
     $('#istand').innerHTML = '<b>Datenstand:</b> ' + Object.keys(STAND).map((cc) => cc + ' ' + esc(String(STAND[cc]).split('-').reverse().join('.'))).join(', ') +
       ' · ' + nCar.toLocaleString('de-DE') + ' Pkw-Schnellladestandorte ab 50 kW · Preise recherchiert am ' + esc(PSTAND) +
       (AFIR_STAND ? ', Ad-hoc-Preise von EnBW, Tesla, EWE Go und vielen Stadtwerken direkt von den Betreibern (Mobilithek), Stand ' + esc(AFIR_STAND.split('-').reverse().join('.')) : '') + '.';

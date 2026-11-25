@@ -1,0 +1,92 @@
+# Holt jede Woche das aktuelle Ladesäulenregister der Bundesnetzagentur
+# (aufbereitet von github.com/ratopi/ladesaeule) und übernimmt neue, geänderte und
+# gestrichene Ladepunkte in data/DE/sites.json.
+# Schutz: tools/register_update.py hält die Schlüssel leicht verschobener Standorte
+# (damit Bewertungen erhalten bleiben) und bricht bei auffälligen Sprüngen ab.
+# Bei Abbruch oder wenn bewertete Standorte wegfallen, wird ein Issue angelegt –
+# GitHub schickt dazu eine Mail.
+name: Ladesäulenregister aktualisieren
+
+on:
+  schedule:
+    - cron: '17 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: register
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install shapely
+
+      - name: Register holen
+        run: |
+          git fetch --depth 1 https://github.com/ratopi/ladesaeule gh-pages
+          git show FETCH_HEAD:ladesaeulen.json.gz > tools/lad.json.gz
+          ls -la tools/lad.json.gz
+
+      - name: Natural Earth (Autobahnen, Ländergrenzen) aus dem Cache
+        id: ne
+        uses: actions/cache@v4
+        with:
+          path: tools/ne
+          key: natural-earth-10m-v1
+      - name: Natural Earth laden
+        if: steps.ne.outputs.cache-hit != 'true'
+        run: |
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/nvkelso/natural-earth-vector "$RUNNER_TEMP/ne"
+          git -C "$RUNNER_TEMP/ne" sparse-checkout set --no-cone /geojson/ne_10m_roads.geojson /geojson/ne_10m_admin_0_countries.geojson
+          mkdir -p tools/ne && cp "$RUNNER_TEMP"/ne/geojson/*.geojson tools/ne/
+
+      - name: Daten bauen
+        run: |
+          cp data/DE/sites.json "$RUNNER_TEMP/alt.json"
+          cd tools && python3 build_de.py
+
+      - name: Prüfen
+        id: check
+        run: |
+          set +e
+          python3 tools/register_update.py "$RUNNER_TEMP/alt.json" data/DE/sites.json "$RUNNER_TEMP/bericht.md"
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          [ -f "$RUNNER_TEMP/bericht.md" ] && cat "$RUNNER_TEMP/bericht.md" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+
+      - name: Übernehmen
+        if: steps.check.outputs.code == '0' || steps.check.outputs.code == '3'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add data/DE/sites.json data/mw.json
+          if git diff --cached --quiet; then echo "Keine Änderungen."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Ladesäulenregister aktualisieren" -m "$(cat "$RUNNER_TEMP/bericht.md")"
+          git pull --rebase origin main
+          git push
+          # Pushes dieses Workflows lösen keine anderen Workflows aus – daher von Hand anstoßen.
+          gh workflow run seiten.yml
+          gh workflow run afir.yml
+
+      - name: Issue bei Auffälligkeiten
+        if: steps.check.outputs.code == '2' || steps.check.outputs.code == '3'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          T="Ladesäulenregister: bitte prüfen"
+          [ "${{ steps.check.outputs.code }}" = "2" ] && T="Ladesäulenregister: Update abgebrochen"
+          { cat "$RUNNER_TEMP/bericht.md"; echo; echo "Lauf: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > "$RUNNER_TEMP/issue.md"
+          gh issue create --title "$T" --body-file "$RUNNER_TEMP/issue.md"

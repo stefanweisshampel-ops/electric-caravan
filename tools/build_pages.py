@@ -64,6 +64,14 @@ def load_sites():
         removed = {x['key'] for x in json.load(open(os.path.join(ROOT, 'data/DE/removed.json'), encoding='utf-8')).get('sites', [])}
     except (OSError, ValueError):
         removed = set()
+    try:  # Lkw-Ladeparks mit Freigabe für Pkw mit Anhänger, siehe _info in der Datei
+        pkw_ok = json.load(open(os.path.join(ROOT, 'data/DE/lkw-ausnahmen.json'), encoding='utf-8')).get('sites', [])
+    except (OSError, ValueError):
+        pkw_ok = []
+
+    def near(x, r):
+        return math.hypot((x['lat'] - r[0]) * 110.57, (x['lon'] - r[1]) * 70.06) < 0.15
+
     sites = []
     for r in d['sites']:
         if 'DE-%.4f_%.4f' % (r[0], r[1]) in removed:
@@ -89,6 +97,7 @@ def load_sites():
             'truck': bool(fl & 32), 'rest': bool(fl & 64), 'term': bool(fl & 8), 'mw': r[11],
             'A': {a: pos for a, pos in (r[12] or [])}, 'best': best, 'city': city,
             'key': key, 'st': None, 'optrailer': bool(a and a[5]),
+            'pkwok': bool(fl & 32) and any(near(x, r) for x in pkw_ok),
         })
     return d, sites
 
@@ -185,7 +194,7 @@ def build():
     attach_stats(sites, stats)
     stand = '.'.join(reversed(d['stand'].split('-')))
     pstand = d.get('priceStand', '')
-    car = [s for s in sites if not s['truck'] and s['kw'] >= MIN_KW]
+    car = [s for s in sites if (not s['truck'] or s['pkwok']) and s['kw'] >= MIN_KW]
     by_a = {}
     for s in car:
         for a in s['A']:
@@ -223,6 +232,8 @@ def build():
                 extra.append('Autohof/Rastanlage')
             if s['term']:
                 extra.append('Kartenterminal')
+            if s['pkwok']:
+                extra.append('Lkw-Ladepark, laut Betreiber auch für Pkw mit Anhänger')
             rows.append(
                 f'<tr><td class="km">{round(km)}{gap}</td>'
                 f'<td><a href="/#s={E(s["key"])}">{E(name)}</a><div class="sub">{sub}</div>'
@@ -243,7 +254,7 @@ def build():
         else:
             intro += 'Noch hat niemand einen davon bewertet – fang gern an. '
         intro += (f'{len(cheap)} Standorte gehören zu Betreibern, die ohne Abo höchstens 0,62 € pro kWh verlangen. '
-                  'Lkw-Ladeparks, an denen Pkw-Ladekarten meist nicht funktionieren, sind nicht aufgeführt.')
+                  'Lkw-Ladeparks sind nur aufgeführt, wenn der Betreiber sie ausdrücklich auch für Pkw mit Anhänger freigibt.')
         goodbox = ''
         if good:
             goodbox = ('<div class="box"><b>Mit Durchfahrt bewertet:</b> '

@@ -1,0 +1,15 @@
+{
+  "_info": "Lkw-Ladeparks aus dem Ladesäulenregister, an denen laut Betreiber ausdrücklich auch Pkw mit Anhänger laden dürfen. Sie werden trotz Lkw-Filter angezeigt, in der normalen Bewertungsfarbe und mit Quellenhinweis. Eine Bewertung wird NICHT gesetzt, die trägt die Community ein. Ein Eintrag gilt für den Lkw-Ladepark im Umkreis von 150 m um lat/lon. Steht der Standort noch nicht im Register, passiert nichts; der Eintrag greift automatisch, sobald die Registerdaten (tools/build_de.py) ihn enthalten. Kein Eintrag ohne ausdrückliche Freigabe des Betreibers. Felder: lat/lon; name (nur zur Orientierung); hinweis = Text in der Detailansicht; quelle/url = Beleg; eingetragen = Datum; stand = interner Vermerk.",
+  "sites": [
+    {
+      "lat": 50.4664,
+      "lon": 7.2354,
+      "name": "NEW Ladehub Niederzissen",
+      "hinweis": "Als Durchfahrtslösung für Lkw mit Auflieger gebaut. Laut Betreiber dürfen hier auch Pkw mit Anhänger laden, etwa Wohnwagengespanne.",
+      "quelle": "Pressemitteilung der NEW vom 24.09.2026",
+      "url": "https://www.electrive.net/2026/09/25/new-energie-lkw-ladepark/",
+      "eingetragen": "2026-11-25",
+      "stand": "Noch nicht im Ladesäulenregister (geprüft: Registerstand 12.11.2026). Position nach Adresse, bei Aufnahme ins Register prüfen."
+    }
+  ]
+}

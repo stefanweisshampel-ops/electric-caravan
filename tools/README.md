@@ -22,6 +22,17 @@ python3 build_de.py
 
 Das Skript schreibt `../data/DE/sites.json` und `../data/mw.json` und gibt eine kurze Statistik aus.
 
+## Automatisch
+
+Der Workflow `.github/workflows/register.yml` macht das jeden Montag früh selbst (oder von Hand über „Run workflow“):
+Register holen, `build_de.py`, dann `register_update.py` als Prüfung. Die Prüfung
+
+- hält den Schlüssel, wenn ein Standort im Register nur leicht verschoben wurde (gleicher Betreiber, unter 150 m), damit Bewertungen erhalten bleiben,
+- bricht ab, wenn sich die Zahl der Standorte ungewöhnlich stark ändert,
+- legt ein Issue an, wenn bewertete Standorte aus dem Register verschwinden.
+
+Danach stößt der Workflow die Autobahnseiten und den AFIR-Preisabgleich neu an.
+
 ## Preise pflegen
 
 Die Betreiberpreise stehen in `prices.py` (eine Zeile pro Betreiber: Name, Suchmuster, Ad-hoc-Preis, App-Preis ohne Grundgebühr, Quelle).
