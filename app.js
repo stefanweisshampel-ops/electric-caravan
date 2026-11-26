@@ -104,7 +104,7 @@
   }
   const isTruckOnly = (s) => s.truck && !s.pkwOk;
   // Zeichenreihenfolge: Bei überlappenden Punkten liegt die günstigste Farbe oben.
-  const DRAW_ORDER = { ja: 6, eng: 5, nein: 4, ungeeignet: 3, open: 2, truck: 1 };
+  const DRAW_ORDER = { ja: 6, eng: 5, nein: 4, open: 3, ungeeignet: 2, truck: 1 };
   let AFIR_STAND = '';
   function applyAfir(a) {
     if (!a || !a.s) return;
