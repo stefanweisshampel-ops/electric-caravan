@@ -103,6 +103,8 @@
     });
   }
   const isTruckOnly = (s) => s.truck && !s.pkwOk;
+  // Zeichenreihenfolge: Bei überlappenden Punkten liegt die günstigste Farbe oben.
+  const DRAW_ORDER = { ja: 6, eng: 5, nein: 4, ungeeignet: 3, open: 2, truck: 1 };
   let AFIR_STAND = '';
   function applyAfir(a) {
     if (!a || !a.s) return;
@@ -455,7 +457,7 @@
       type: 'FeatureCollection',
       features: vis.map((s) => ({
         type: 'Feature', geometry: { type: 'Point', coordinates: [s.lon, s.lat] },
-        properties: { i: s.i, c: colorKey(s), r: s.st ? 1 : 0, o: s.st ? 2 : (isTruckOnly(s) ? 0 : 1), n: s.name || s.op },
+        properties: { i: s.i, c: colorKey(s), r: s.st ? 1 : 0, o: DRAW_ORDER[colorKey(s)] || 0, n: s.name || s.op },
       })),
     });
     map.getSource('sel').setData({ type: 'FeatureCollection', features: detail ? [{ type: 'Feature', geometry: { type: 'Point', coordinates: [detail.lon, detail.lat] }, properties: {} }] : [] });
