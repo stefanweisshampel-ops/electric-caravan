@@ -516,7 +516,7 @@
   });
 
   const srcLink = (x) => x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.quelle || 'Quelle') + '</a>' : esc(x.quelle || '');
-  const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a><div class="nofuss"><i>♥</i> Kein Tracking, keine Werbung, kein Cookie-Banner <i>♥</i></div></div>';
+  const legalHtml = '<div class="legal"><a href="/autobahn/">Autobahnen</a> · <a href="/betreiber/">Betreiber</a> · <a href="/ratgeber/">Ratgeber</a> · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a><div class="nofuss"><i>♥</i> Kein Tracking, keine Werbung, kein Cookie-Banner <i>♥</i></div></div>';
   function rowHtml(s, extra) {
     const st = statusOf(s);
     const sub = [];
@@ -625,6 +625,8 @@
     if (!h || /access_token|error/.test(h)) return;
     const am = /^a\s*(\d{1,3})$/i.exec(h);
     if (am && AS.has('A' + am[1])) { q.value = 'A' + am[1]; startRoute('A' + am[1]); return; }
+    const om = /^op=(.{2,40})$/.exec(h);  // z. B. #op=Tesla von den Betreiberseiten
+    if (om) { F.op = om[1].trim(); $('#fop').value = F.op; filterChanged(); toast('Filter: Betreiber enthält „' + F.op + '“'); return; }
     const sm = /^s=([A-Z]{2}-[-0-9.]+_[-0-9.]+)$/.exec(h);
     if (sm && siteByKey.has(sm[1])) {
       openDetail(siteByKey.get(sm[1]), true);

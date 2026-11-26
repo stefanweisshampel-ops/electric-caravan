@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Gespann-Lader – Schnelllader mit Durchfahrt für Anhänger</title>
-<meta name="description" content="Schnellladesäulen finden, an denen man mit Anhänger oder Wohnwagen durchfahren kann – von Gespannfahrern bewertet. Kostenlos, ohne App.">
+<title>Ladestationen für E-Auto mit Anhänger – Gespann-Lader</title>
+<meta name="description" content="Karte der Schnelllader, an denen du mit E-Auto und Anhänger oder Wohnwagen durchfahren kannst, ohne abzukoppeln. Von Gespannfahrern bewertet, kostenlos.">
 <link rel="canonical" href="https://gespann-lader.de/">
 <meta name="theme-color" content="#0f5f6e">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Gespann-Lader">
 <meta property="og:locale" content="de_DE">
 <meta property="og:url" content="https://gespann-lader.de/">
-<meta property="og:title" content="Gespann-Lader – Schnelllader mit Durchfahrt für Wohnwagen und Anhänger">
+<meta property="og:title" content="Gespann-Lader – Ladestationen für E-Auto mit Anhänger oder Wohnwagen">
 <meta property="og:description" content="Karte der Schnellladesäulen, an denen man mit Gespann nicht abkoppeln muss. Von Gespannfahrern bewertet – mach mit!">
 <meta property="og:image" content="https://gespann-lader.de/og.png">
 <meta property="og:image:width" content="1200">
@@ -22,11 +22,11 @@
 <meta property="og:image:alt" content="Gespann-Lader: Karte der Schnelllader in Deutschland mit den Bewertungen Durchfahrt möglich, Nur wenn wenig los, Abkoppeln nötig">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="vendor/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=20261125c">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Gespann-Lader", "url": "https://gespann-lader.de/", "description": "Karte der Schnellladesäulen, an denen man mit E-Auto und Wohnwagen oder Anhänger laden kann, ohne abzukoppeln – bewertet von Gespannfahrern.", "applicationCategory": "TravelApplication", "operatingSystem": "Web", "inLanguage": "de", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "image": "https://gespann-lader.de/og.png"}</script>
+<link rel="stylesheet" href="style.css?v=20261126a">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Gespann-Lader", "url": "https://gespann-lader.de/", "description": "Karte der Ladestationen und Schnelllader in Deutschland, an denen man mit E-Auto und Anhänger, Wohnwagen oder Gespann laden kann, ohne abzukoppeln – bewertet von Gespannfahrern.", "applicationCategory": "TravelApplication", "operatingSystem": "Web", "inLanguage": "de", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "image": "https://gespann-lader.de/og.png", "alternateName": "Gespann-Lader – Ladestationen mit Durchfahrt", "keywords": "E-Auto, Elektroauto, EV, Anhänger, Wohnwagen, Gespann, Ladestation, Ladesäule, Schnelllader, Durchfahrt, ohne Abkoppeln", "about": [{"@type": "Thing", "name": "Laden von Elektroautos mit Anhänger"}, {"@type": "Thing", "name": "Ladestationen mit Durchfahrt"}], "areaServed": {"@type": "Country", "name": "Deutschland"}}</script>
 </head>
 <body>
-<h1 class="sr">Gespann-Lader – Schnelllader mit Durchfahrt für E-Autos mit Wohnwagen oder Anhänger</h1>
+<h1 class="sr">Gespann-Lader – Ladestationen mit Durchfahrt für E-Autos mit Anhänger oder Wohnwagen</h1>
 <noscript><div style="padding:20px;max-width:700px;font:16px/1.5 sans-serif"><p><b>Gespann-Lader</b> zeigt Schnellladesäulen, an denen man mit E-Auto und Wohnwagen oder Anhänger laden kann, ohne abzukoppeln – bewertet von Gespannfahrern. Für die Karte wird JavaScript benötigt.</p><p><a href="/autobahn/">Schnelllader nach Autobahn</a> · <a href="/ratgeber/">Ratgeber: E-Auto mit Wohnwagen laden</a> · <a href="/impressum.html">Impressum</a></p></div></noscript>
 <div id="loading">Lade Ladesäulendaten …</div>
 <div id="map"></div>
@@ -93,13 +93,13 @@
   <div class="panel">
     <h3>Konto &amp; Info <button class="btn ghost" id="iclose">Schließen</button></h3>
     <div class="acct" id="acct"></div>
-    <p><b>Wozu:</b> Schnelllader finden, an denen man mit Anhänger oder Wohnwagen durchfahren kann, ohne abzukoppeln. Das steht in keinem amtlichen Datensatz – deshalb bewerten Gespannfahrer die Standorte selbst. Je mehr mitmachen, desto besser wird die Karte.</p>
+    <p><b>Wozu:</b> Ladestationen finden, an denen man mit E-Auto und Anhänger oder Wohnwagen durchfahren kann, ohne abzukoppeln. Das steht in keinem amtlichen Datensatz – deshalb bewerten Gespannfahrer die Schnelllader selbst. Je mehr mitmachen, desto besser wird die Karte.</p>
     <p><b>So bewertest du:</b> Standort antippen, per Luftbild oder vor Ort prüfen, dann wählen: <b>„Durchfahrt möglich“</b> heißt vorwärts rein und vorwärts raus, ohne andere Plätze zu blockieren – z. B. eigene Gespann-Plätze oder Säulen längs der Fahrspur. <b>„Nur wenn wenig los“</b> heißt: klappt ohne Abkoppeln, belegt aber mehrere Plätze oder die Fahrgasse. <b>„Abkoppeln nötig“</b> heißt: mit Anhänger kommt man nicht an die Säule, z. B. wegen Bordstein, enger Buchten oder zu kurzer Kabel, kann ihn aber in der Nähe abstellen. <b>„Ungeeignet für Gespanne“</b> (schwarz) heißt: auch Abkoppeln hilft kaum – kein Platz, um den Anhänger abzustellen, Parkhaus, Säule am Straßenrand oder zu enge Zufahrt. Die Farbe auf der Karte zeigt die häufigste Bewertung, bei Gleichstand die vorsichtigere.</p>
     <p><b>Lkw-Ladeparks</b> werden am MCS-Stecker, an sehr hoher Leistung (ab 600 kW) oder an Namen wie Milence, „Truck“ oder „LKW“ erkannt. Das ist eine Heuristik.</p>
     <p><b>Preise ohne Abo:</b> Pro Betreiber hinterlegt sind der Ad-hoc-Preis und, falls vorhanden, der Preis der eigenen App ohne Grundgebühr, jeweils fürs Schnellladen. Gefiltert wird mit dem günstigsten davon; bei Preisspannen zählt der untere Wert. Fremde Ladekarten sind nicht eingerechnet. Verbindlich ist immer der Preis vor dem Ladestart.</p>
     <p id="istand"></p>
     <p><b>Quellen:</b> Ladesäulenregister der Bundesnetzagentur (CC BY 4.0), aufbereitet von <a href="https://github.com/ratopi/ladesaeule">ratopi/ladesaeule</a> · Ad-hoc-Preise und Betreiberangaben: AFIR-Daten über die <a href="https://mobilithek.info">Mobilithek</a> (EnBW AG: CC BY 4.0; Tesla, EWE Go, Volkswagen Group Charging, e-clearing.net: Open Data) · Karte: <a href="https://openfreemap.org">OpenFreeMap</a>, Kartendaten © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende · Autobahnachsen: <a href="https://www.naturalearthdata.com/">Natural Earth</a>.</p>
-    <p><a href="/autobahn/">Schnelllader nach Autobahn</a> · <a href="/ratgeber/">Ratgeber: Laden mit Wohnwagen</a></p>
+    <p><a href="/autobahn/">Schnelllader nach Autobahn</a> · <a href="/betreiber/">nach Betreiber</a> · <a href="/ratgeber/">Ratgeber: Laden mit Anhänger</a></p>
     <p><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
     <p class="nofuss"><i>♥</i> Kein Tracking, keine Werbung, kein Cookie-Banner <i>♥</i></p>
   </div>
@@ -108,8 +108,8 @@
 
 <script src="vendor/maplibre-gl.js"></script>
 <script src="vendor/supabase.js"></script>
-<script src="config.js?v=20261125c"></script>
-<script>window.GL_VERSION = "20261125c";</script>
-<script src="app.js?v=20261125c"></script>
+<script src="config.js?v=20261126a"></script>
+<script>window.GL_VERSION = "20261126a";</script>
+<script src="app.js?v=20261126a"></script>
 </body>
 </html>

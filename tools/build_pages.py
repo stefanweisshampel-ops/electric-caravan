@@ -9,6 +9,7 @@ Die Bewertungen holt das Skript über die öffentliche Abfrage site_stats aus Su
 (Adresse und Schlüssel aus config.js). Alternativ: --stats datei.json
 Aufruf aus dem Projektordner:  python3 tools/build_pages.py
 """
+import datetime
 import html
 import json
 import math
@@ -137,13 +138,15 @@ def status_of(s):
             return k
 
 
-def page(title, desc, path, body, crumbs=None):
+def page(title, desc, path, body, crumbs=None, extra_ld=None):
     ld = ''
     if crumbs:
         ld = '<script type="application/ld+json">' + json.dumps({
             '@context': 'https://schema.org', '@type': 'BreadcrumbList',
             'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': n, 'item': SITE + u}
                                 for i, (n, u) in enumerate(crumbs)]}, ensure_ascii=False) + '</script>'
+    for x in extra_ld or []:
+        ld += '\n<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False) + '</script>'
     return f'''<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -167,7 +170,7 @@ def page(title, desc, path, body, crumbs=None):
 {ld}
 </head>
 <body>
-<header class="top"><a class="brand" href="/">Gespann-Lader</a><nav><a href="/">Karte</a><a href="/autobahn/">Autobahnen</a><a href="/ratgeber/">Ratgeber</a></nav></header>
+<header class="top"><a class="brand" href="/">Gespann-Lader</a><nav><a href="/">Karte</a><a href="/autobahn/">Autobahnen</a><a href="/betreiber/">Betreiber</a><a href="/ratgeber/">Ratgeber</a></nav></header>
 <main>
 {body}
 </main>
@@ -178,6 +181,169 @@ def page(title, desc, path, body, crumbs=None):
 </body>
 </html>
 '''
+
+
+# Betreiberseiten: (Pfad, Anzeigename, Suchtext im Betreibernamen, Überschrift)
+BETREIBER = [
+    ('tesla', 'Tesla', 'tesla', 'Tesla Supercharger mit Anhänger'),
+    ('ionity', 'IONITY', 'ionity', 'IONITY mit Anhänger oder Wohnwagen'),
+    ('enbw', 'EnBW', 'enbw', 'EnBW-Schnelllader mit Anhänger'),
+    ('ewe-go', 'EWE Go', 'ewe go', 'EWE Go mit Anhänger'),
+    ('aral-pulse', 'Aral pulse', 'aral pulse', 'Aral pulse mit Anhänger'),
+    ('shell', 'Shell Recharge', 'shell', 'Shell Recharge mit Anhänger'),
+    ('allego', 'Allego', 'allego', 'Allego mit Anhänger'),
+    ('fastned', 'Fastned', 'fastned', 'Fastned mit Anhänger'),
+    ('pfalzwerke', 'Pfalzwerke', 'pfalzwerke', 'Pfalzwerke-Schnelllader mit Anhänger'),
+    ('vattenfall', 'Vattenfall', 'vattenfall', 'Vattenfall-Schnelllader mit Anhänger'),
+    ('aldi', 'ALDI', 'aldi', 'Bei ALDI mit Anhänger laden'),
+    ('eon', 'E.ON Drive', 'e.on', 'E.ON-Schnelllader mit Anhänger'),
+    ('mer', 'Mer', 'mer germany', 'Mer-Schnelllader mit Anhänger'),
+    ('circle-k', 'Circle K', 'circle k', 'Circle K mit Anhänger'),
+    ('electra', 'Electra', 'electra', 'Electra mit Anhänger'),
+    ('jolt', 'Jolt', 'jolt', 'Jolt mit Anhänger'),
+    ('totalenergies', 'TotalEnergies', 'totalenergies', 'TotalEnergies mit Anhänger'),
+    ('comfort-charge', 'Comfort Charge', 'comfort charge', 'Comfort Charge mit Anhänger'),
+]
+
+
+def badge(s):
+    st = status_of(s)
+    n = sum(s['st'].values()) if s['st'] else 0
+    if st:
+        return f'<span class="b {st}">{STATUS[st]}</span>' + (f'<small>{n} Bewertungen</small>' if n > 1 else '')
+    if s.get('optrailer'):
+        return '<span class="b ja">Durchfahrt laut Betreiber</span>'
+    return '<span class="b open">noch nicht bewertet</span>'
+
+
+def counts_text(cnt, n_r):
+    teile = [f'{cnt["ja"]} mit Durchfahrt', f'{cnt["eng"]} nur wenn wenig los ist', f'{cnt["nein"]} nur mit Abkoppeln']
+    if cnt['ungeeignet']:
+        teile.append(f'{cnt["ungeeignet"]} gar nicht für Gespanne')
+    return f'{n_r} davon haben Gespannfahrer schon bewertet: ' + ', '.join(teile[:-1]) + ' und ' + teile[-1] + '. '
+
+
+def build_betreiber(car, stand, urls):
+    ORDER = {'ja': 0, 'eng': 1, 'nein': 2, 'ungeeignet': 3, None: 4}
+    overview = []
+    for slug, name, needle, h1 in BETREIBER:
+        lst = [s for s in car if needle in s['op'].lower()]
+        if len(lst) < 20:
+            continue
+        cnt = {k: sum(1 for s in lst if status_of(s) == k) for k in STATUS}
+        n_r = sum(cnt.values())
+        overview.append((slug, name, len(lst), cnt['ja'], n_r))
+        rated = sorted((s for s in lst if status_of(s)), key=lambda s: (ORDER[status_of(s)], s['city']))
+        near = sorted((s for s in lst if not status_of(s) and s['mw'] is not None and s['mw'] <= 1),
+                      key=lambda s: (sorted(s['A'])[0] if s['A'] else 'Z', s['city']))
+        prices = sorted(s['best'] for s in lst if s['best'] is not None)
+
+        def rows(xs):
+            out = []
+            for s in xs:
+                sub = E(s['city']) + ((' · ' + ', '.join(sorted(s['A'], key=lambda a: int(re.sub(r'\D', '', a) or 0)))) if s['A'] else '')
+                out.append(f'<tr><td><a href="/#s={E(s["key"])}">{E(s["name"] or s["op"])}</a><div class="sub">{sub}</div></td>'
+                           f'<td class="num">{s["kw"]} kW<div class="sub">{s["n"]} Ladepunkt{"e" if s["n"] != 1 else ""}</div></td>'
+                           f'<td>{badge(s)}</td></tr>')
+            return '\n'.join(out)
+
+        intro = f'{name} betreibt in Deutschland {len(lst)} Schnellladestandorte für Pkw mit mindestens {MIN_KW} kW. '
+        intro += counts_text(cnt, n_r) if n_r else 'Bewertet hat davon noch niemand einen – fang gern an. '
+        intro += 'Ob man mit Wohnwagen oder Anhänger ohne Abkoppeln laden kann, hängt vom einzelnen Standort ab: Manche Ladeparks haben Durchfahrtsplätze, viele nur Parkbuchten.'
+        price = ''
+        if prices:
+            price = f'<p>Preis ohne Abo laut unseren Daten: ab {fmt_eur(prices[0])} pro kWh. Verbindlich ist der Preis vor dem Ladestart.</p>'
+        good = [s for s in lst if status_of(s) == 'ja']
+        goodbox = ('<div class="box"><b>Mit Durchfahrt bewertet:</b> ' + ', '.join(
+            f'<a href="/#s={E(s["key"])}">{E(s["name"] or s["op"])}</a> ({E(s["city"])})' for s in good) + '</div>') if good else ''
+        table_r = (f'<h2>Bewertete Standorte ({n_r})</h2><div class="tw"><table><thead><tr><th>Standort</th><th>Leistung</th><th>Mit Gespann</th></tr></thead><tbody>\n{rows(rated)}\n</tbody></table></div>') if rated else ''
+        table_n = (f'<h2>Direkt an der Autobahn, noch nicht bewertet ({len(near)})</h2><p class="hint">Höchstens einen Kilometer von der Autobahn entfernt. Wer einen davon kennt: bitte auf der Karte bewerten.</p>'
+                   f'<div class="tw"><table><thead><tr><th>Standort</th><th>Leistung</th><th>Mit Gespann</th></tr></thead><tbody>\n{rows(near)}\n</tbody></table></div>') if near else ''
+        body = f'''<p class="crumbs"><a href="/">Start</a> › <a href="/betreiber/">Betreiber</a> › {E(name)}</p>
+<h1>{E(h1)}: Wo ist Durchfahrt möglich?</h1>
+<p class="lead">{E(intro)}</p>
+<p><a class="btn" href="/#op={E(needle)}">Alle {len(lst)} Standorte von {E(name)} auf der Karte</a></p>
+{goodbox}
+{price}
+{table_r}
+{table_n}
+<p class="hint">Stationsdaten: Ladesäulenregister der Bundesnetzagentur, Stand {E(stand)}. Die Bewertungen werden täglich aktualisiert, ganz aktuell sind sie auf der Karte. Mehr zum Laden mit Gespann im <a href="/ratgeber/">Ratgeber</a>.</p>'''
+        title = f'{h1}: Ladestationen mit Durchfahrt | Gespann-Lader'
+        desc = (f'{len(lst)} Schnelllader von {name}: Wo kann man mit E-Auto und Wohnwagen oder Anhänger laden, ohne abzukoppeln? '
+                f'Bewertet von Gespannfahrern.')
+        path = f'/betreiber/{slug}/'
+        os.makedirs(os.path.join(ROOT, 'betreiber', slug), exist_ok=True)
+        with open(os.path.join(ROOT, 'betreiber', slug, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(page(title, desc, path, body, [('Start', '/'), ('Betreiber', '/betreiber/'), (name, path)]))
+        urls.append((path, '0.6'))
+
+    items = ''.join(f'<li><a href="/betreiber/{slug}/"><b>{E(name)}</b></a><span>{n} Schnelllader'
+                    + (f' · {r} bewertet' if r else '') + (f' · {g} mit Durchfahrt' if g else '') + '</span></li>'
+                    for slug, name, n, g, r in overview)
+    body = f'''<p class="crumbs"><a href="/">Start</a> › Betreiber</p>
+<h1>Ladestationen für Gespanne nach Betreiber</h1>
+<p class="lead">Welche Schnelllader von Tesla, IONITY, EnBW, Aral pulse und anderen Betreibern lassen sich mit E-Auto und Anhänger oder Wohnwagen anfahren, ohne abzukoppeln? Für jeden großen Betreiber gibt es hier alle bisherigen Bewertungen von Gespannfahrern.</p>
+<ul class="alist">{items}</ul>
+<p class="hint">Stationsdaten: Ladesäulenregister der Bundesnetzagentur, Stand {E(stand)}. Gezählt sind Pkw-Schnelllader ab {MIN_KW} kW.</p>'''
+    os.makedirs(os.path.join(ROOT, 'betreiber'), exist_ok=True)
+    with open(os.path.join(ROOT, 'betreiber', 'index.html'), 'w', encoding='utf-8') as f:
+        f.write(page('Ladestationen mit Durchfahrt nach Betreiber: Tesla, IONITY, EnBW … | Gespann-Lader',
+                     'Schnelllader von Tesla, IONITY, EnBW, Aral pulse und anderen: Wo kann man mit Anhänger oder Wohnwagen laden, ohne abzukoppeln?',
+                     '/betreiber/', body, [('Start', '/'), ('Betreiber', '/betreiber/')]))
+    urls.insert(3, ('/betreiber/', '0.8'))
+    return overview
+
+
+def build_ratgeber(car, stand, betreiber):
+    tpl = open(os.path.join(ROOT, 'tools', 'ratgeber.html'), encoding='utf-8').read()
+    tpl = re.sub(r'^<!--.*?-->\s*', '', tpl, flags=re.S)
+    cnt = {k: sum(1 for s in car if status_of(s) == k) for k in STATUS}
+    n_r = sum(cnt.values())
+    links = '<ul class="alist">' + ''.join(
+        f'<li><a href="/betreiber/{slug}/"><b>{E(name)}</b></a><span>{n} Schnelllader' + (f' · {r} bewertet' if r else '') + '</span></li>'
+        for slug, name, n, g, r in betreiber) + '</ul>'
+    pct = round(100 * cnt['ja'] / n_r) if n_r else 0
+    p_ja = f'{pct} Prozent'
+    vals = {'STAND': stand, 'N_FAST': f'{len(car):,}'.replace(',', '.'), 'N_RATED': str(n_r), 'N_JA': str(cnt['ja']),
+            'N_ENG': str(cnt['eng']), 'N_NEIN': str(cnt['nein']), 'N_UNG': str(cnt['ungeeignet']), 'P_JA': p_ja,
+            'BETREIBER_LINKS': links}
+    body = re.sub(r'\{\{(\w+)\}\}', lambda m: vals[m.group(1)], tpl)
+    faq = []
+    for q, a in re.findall(r'<h3>(.*?)</h3>\s*<p>(.*?)</p>', body, re.S):
+        faq.append({'@type': 'Question', 'name': re.sub('<[^>]+>', '', q),
+                    'acceptedAnswer': {'@type': 'Answer', 'text': re.sub('<[^>]+>', '', a)}})
+    extra = [{'@context': 'https://schema.org', '@type': 'Article',
+              'headline': 'E-Auto mit Anhänger oder Wohnwagen laden – ohne Abkoppeln', 'inLanguage': 'de',
+              'author': {'@type': 'Organization', 'name': 'Gespann-Lader', 'url': SITE + '/'},
+              'mainEntityOfPage': SITE + '/ratgeber/'}]
+    if faq:
+        extra.append({'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': faq})
+    os.makedirs(os.path.join(ROOT, 'ratgeber'), exist_ok=True)
+    with open(os.path.join(ROOT, 'ratgeber', 'index.html'), 'w', encoding='utf-8') as f:
+        f.write(page('E-Auto mit Anhänger oder Wohnwagen laden: Ladestationen mit Durchfahrt | Gespann-Lader',
+                     'Wie lädt man ein Elektroauto mit Anhänger oder Wohnwagen, ohne abzukoppeln? Woran man Ladestationen mit Durchfahrt erkennt, '
+                     'wie viel Reichweite der Anhänger kostet und was bei Lkw-Ladeparks gilt.',
+                     '/ratgeber/', body, [('Start', '/'), ('Ratgeber', '/ratgeber/')], extra))
+
+
+def lastmod(url, _old={}):
+    """Änderungsdatum für die Sitemap: heute, wenn sich die Seite gegenüber dem letzten Commit geändert hat,
+    sonst das bisherige Datum. So bleibt lastmod ehrlich und die Sitemap ändert sich nicht jeden Tag."""
+    import subprocess
+    if not _old:
+        try:
+            old = open(os.path.join(ROOT, 'sitemap.xml'), encoding='utf-8').read()
+            _old.update(re.findall(r'<loc>' + re.escape(SITE) + r'(\S+?)</loc><lastmod>([\d-]+)</lastmod>', old))
+        except OSError:
+            pass
+        _old.setdefault('_', '')
+    f = url.strip('/') + '/index.html' if url.endswith('/') and url != '/' else ('index.html' if url == '/' else url.lstrip('/'))
+    try:
+        tracked = subprocess.run(['git', 'ls-files', '--error-unmatch', f], cwd=ROOT, capture_output=True).returncode == 0
+        changed = not tracked or subprocess.run(['git', 'diff', '--quiet', 'HEAD', '--', f], cwd=ROOT).returncode != 0
+    except OSError:
+        changed = False
+    return datetime.date.today().isoformat() if changed or url not in _old else _old[url]
 
 
 def axis_label(o):
@@ -296,14 +462,17 @@ def build():
                      'bewertet von Gespannfahrern, mit Preisen ohne Abo.',
                      '/autobahn/', body, [('Start', '/'), ('Autobahnen', '/autobahn/')]))
 
+    betreiber = build_betreiber(car, stand, urls)
+    build_ratgeber(car, stand, betreiber)
     urls += [('/impressum.html', '0.1'), ('/datenschutz.html', '0.1')]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    sm += [f'  <url><loc>{SITE}{u}</loc><priority>{p}</priority></url>' for u, p in urls]
+    sm += [f'  <url><loc>{SITE}{u}</loc>' + (f'<lastmod>{lm}</lastmod>' if lm else '') + f'<priority>{p}</priority></url>'
+           for u, p in urls for lm in [lastmod(u)]]
     sm.append('</urlset>')
     with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(sm) + '\n')
-    print(f'{len(overview)} Autobahn-Seiten, {len(urls)} URLs in der Sitemap, {total_rated} bewertete Standorte')
+    print(f'{len(betreiber)} Betreiberseiten, {len(overview)} Autobahn-Seiten, {len(urls)} URLs in der Sitemap, {total_rated} bewertete Standorte')
 
 
 if __name__ == '__main__':

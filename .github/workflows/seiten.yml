@@ -1,4 +1,5 @@
-# Baut die Autobahn-Seiten (autobahn/…) und die Sitemap täglich mit den aktuellen Bewertungen neu.
+# Baut Autobahn-Seiten, Betreiberseiten, Ratgeber und Sitemap täglich mit den aktuellen Bewertungen neu
+# und meldet geänderte Seiten per IndexNow an Bing.
 name: Autobahn-Seiten aktualisieren
 
 on:
@@ -7,7 +8,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['data/**', 'tools/build_pages.py']
+    paths: ['data/**', 'tools/build_pages.py', 'tools/ratgeber.html']
 
 permissions:
   contents: write
@@ -30,8 +31,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add autobahn sitemap.xml
+          git add autobahn betreiber ratgeber sitemap.xml
           if git diff --cached --quiet; then echo "Keine Änderungen."; exit 0; fi
           git commit -m "Autobahn-Seiten mit aktuellen Bewertungen"
           git pull --rebase origin main
           git push
+          python3 tools/indexnow.py
