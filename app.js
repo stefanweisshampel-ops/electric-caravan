@@ -140,7 +140,15 @@
     return 'ja';
   }
   // Betreiber meldet "für Pkw mit Anhänger/Wohnwagen geeignet" (AFIR-Daten über die Mobilithek)
-  const opTrailer = (s) => !!(s.afir && s.afir.trailer);
+  const opTrailer = (s) => !!(s.opInfo || (s.afir && s.afir.trailer));
+  // Betreiberangaben zur Durchfahrt (data/DE/betreiber-angaben.json): grün „laut Betreiber“, Community hat Vorrang.
+  function applyOpInfo(list) {
+    ((list && list.sites) || []).forEach((x) => {
+      sites.forEach((s) => {
+        if (dist(x.lat, x.lon, s.lat, s.lon) < 0.15 && (s.op || '').toLowerCase().includes(x.betreiber)) s.opInfo = x;
+      });
+    });
+  }
   function effStatus(s) { return statusOf(s) || (opTrailer(s) ? 'ja' : null); }
   function applyStats(rows) {
     ratedSites.forEach((s) => { s.st = null; s.statKey = null; });
@@ -748,7 +756,9 @@
       '<div class="chips">' + chips.join('') + '</div>' +
       '<div class="links">' + links + '</div>' +
       '<div class="sec"><h4>Mit Gespann – Bewertungen</h4>' + communityHtml(s) +
-      (opTrailer(s) ? '<div class="note opok">Laut ' + esc(s.afir.src.label) + ' für Pkw mit Anhänger geeignet' +
+      (s.opInfo ? '<div class="note opok"><b>Durchfahrt laut Betreiber.</b> ' + esc(s.opInfo.hinweis || '') + ' Quelle: ' + srcLink(s.opInfo) + '. ' +
+        (statusOf(s) ? 'Die Farbe richtet sich nach den Bewertungen.' : 'Noch von niemandem aus der Community bestätigt.') + '</div>'
+        : opTrailer(s) ? '<div class="note opok">Laut ' + esc(s.afir.src.label) + ' für Pkw mit Anhänger geeignet' +
         (s.afir.len ? ' (Stellplatzlänge ' + String(s.afir.len).replace('.', ',') + ' m)' : '') +
         '. Angabe des Betreibers aus den AFIR-Daten – ' + (statusOf(s) ? 'die Farbe richtet sich nach den Bewertungen.' : 'noch von niemandem bestätigt.') + '</div>' : '') + '</div>' +
       '<div class="sec"><h4>' + (s.mine ? 'Deine Bewertung' : 'Selbst bewerten') + '</h4>' + rateFormHtml(s) + '</div>' +
@@ -893,16 +903,18 @@
       const V = '?v=' + (window.GL_VERSION || Date.now());
       const countries = await fetchJson('data/countries.json' + V);
       const day = new Date().toISOString().slice(0, 10);
-      const [datas, mw, afir, removedList, pkwOkList] = await Promise.all([
+      const [datas, mw, afir, removedList, pkwOkList, opInfoList] = await Promise.all([
         Promise.all(countries.map((c) => fetchJson(c.file + V, 60000).then((d) => [c.code, d]))),
         fetchJson('data/mw.json' + V).catch(() => []),
         fetchJson('data/DE/afir.json' + V + '&d=' + day).catch(() => null),
         fetchJson('data/DE/removed.json' + V).catch(() => null),
         fetchJson('data/DE/lkw-ausnahmen.json' + V).catch(() => null),
+        fetchJson('data/DE/betreiber-angaben.json' + V).catch(() => null),
       ]);
       const removed = new Set(((removedList && removedList.sites) || []).map((x) => x.key));
       datas.forEach(([cc, d]) => decodeCountry(cc, d, removed));
       applyPkwOk(pkwOkList);
+      applyOpInfo(opInfoList);
       applyAfir(afir);
       MW = mw;
       places.sort((a, b) => b[4] - a[4]);

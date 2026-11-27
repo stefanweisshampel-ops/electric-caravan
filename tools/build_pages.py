@@ -73,6 +73,11 @@ def load_sites():
     def near(x, r):
         return math.hypot((x['lat'] - r[0]) * 110.57, (x['lon'] - r[1]) * 70.06) < 0.15
 
+    try:  # Durchfahrt laut Betreiber, siehe _info in der Datei
+        op_info = json.load(open(os.path.join(ROOT, 'data/DE/betreiber-angaben.json'), encoding='utf-8')).get('sites', [])
+    except (OSError, ValueError):
+        op_info = []
+
     sites = []
     for r in d['sites']:
         if 'DE-%.4f_%.4f' % (r[0], r[1]) in removed:
@@ -97,7 +102,8 @@ def load_sites():
             'lat': r[0], 'lon': r[1], 'op': d['ops'][r[2]], 'name': r[3], 'addr': r[4], 'kw': r[6], 'n': r[7],
             'truck': bool(fl & 32), 'rest': bool(fl & 64), 'term': bool(fl & 8), 'mw': r[11],
             'A': {a: pos for a, pos in (r[12] or [])}, 'best': best, 'city': city,
-            'key': key, 'st': None, 'optrailer': bool(a and a[5]),
+            'key': key, 'st': None,
+            'optrailer': bool(a and a[5]) or any(near(x, r) and x['betreiber'] in d['ops'][r[2]].lower() for x in op_info),
             'pkwok': bool(fl & 32) and any(near(x, r) for x in pkw_ok),
         })
     return d, sites
